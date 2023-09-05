@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import scrolledtext
 from tkinter import font
 import webbrowser
 import os
@@ -340,19 +341,34 @@ def launch():
     root = tk.Tk()
     root.title("auto-phylo GUI")
 
+    top_frame = tk.Frame(root)
+    middle_frame = tk.Frame(root)
+    bottom_frame = tk.Frame(root)
+
+    top_frame.pack(side=tk.TOP)
+    middle_frame.pack(side=tk.TOP, fill=tk.BOTH, pady=10, padx=10)
+    bottom_frame.pack(side=tk.TOP)
+
+    root.rowconfigure(0, weight=0)
+    root.rowconfigure(1, weight=1)
+    root.rowconfigure(2, weight=0)
+
+    middle_frame.columnconfigure(0, weight=0)
+    middle_frame.columnconfigure(1, weight=1)
+
     # Working Directory
     global working_directory_var
     global working_directory_btn
-    working_directory_var = tk.StringVar(root)
-    working_directory_btn = tk.Button(root, text="Working Directory",
+    working_directory_var = tk.StringVar(top_frame)
+    working_directory_btn = tk.Button(top_frame, text="Working Directory",
                                       command=lambda: select_working_directory(working_directory_var))
     working_directory_btn.grid(row=0, column=0)
 
     # Module Selection
     global module_selection_var
-    module_selection_var = tk.StringVar(root)
+    module_selection_var = tk.StringVar(top_frame)
     module_selection_var.set("Choose a module")  # Default value
-    module_selection_btn = tk.OptionMenu(root, module_selection_var, "tblastx (MP) (FASTA-FASTA)",
+    module_selection_btn = tk.OptionMenu(top_frame, module_selection_var, "tblastx (MP) (FASTA-FASTA)",
                                          "add_taxonomy (MP) (FASTA-FASTA)",
                                          "CGF_and_CGA_CDS_processing (MP) (FASTA-FASTA)",
                                          "check_contamination (MP) (FASTA-FASTA)", "disambiguate (M) (FASTA-FASTA)",
@@ -369,69 +385,69 @@ def launch():
 
     # Information button
     label_font = font.Font(slant="italic", size=9)
-    info_btn = tk.Button(root, text="info", font=label_font, command=open_web_address)
+    info_btn = tk.Button(top_frame, text="info", font=label_font, command=open_web_address)
     info_btn.grid(row=0, column=2)
 
     # Special Number Selection
     global special_var
-    special_var = tk.IntVar(root)
+    special_var = tk.IntVar(top_frame)
     special_var.set(0)  # Default value
 
     # Label for Special Number Selection
-    label_special = tk.Label(root, text="Special value:")
+    label_special = tk.Label(top_frame, text="Special value:")
     label_special.grid(row=1, column=0)
-    special_btn = tk.Scale(root, variable=special_var, from_=0, to=50, orient=tk.HORIZONTAL)
+    special_btn = tk.Scale(top_frame, variable=special_var, from_=0, to=50, orient=tk.HORIZONTAL)
     special_btn.grid(row=1, column=1)
 
     # Special Information button
     label_font = font.Font(slant="italic", size=9)
-    info1_btn = tk.Button(root, text="info", font=label_font, command=open_web_address1)
+    info1_btn = tk.Button(top_frame, text="info", font=label_font, command=open_web_address1)
     info1_btn.grid(row=1, column=2)
 
     # Label for Input Directory
-    label_input = tk.Label(root, text="Input Directory:")
+    label_input = tk.Label(top_frame, text="Input Directory:")
     label_input.grid(row=2, column=0)
 
     # Text field for Input Directory
     global input_dir
-    input_dir = tk.Text(root, height=1, width=40)
+    input_dir = tk.Text(top_frame, height=1, width=40)
     input_dir.grid(row=2, column=1)
 
     # Label for Output Directory
-    label_output = tk.Label(root, text="Output Directory:")
+    label_output = tk.Label(top_frame, text="Output Directory:")
     label_output.grid(row=3, column=0)
 
     # Text field for Output Directory
     global output_dir
-    output_dir = tk.Text(root, height=1, width=40)
+    output_dir = tk.Text(top_frame, height=1, width=40)
     output_dir.grid(row=3, column=1)
 
     # Label for Config
-    label_config = tk.Label(root, text="Config file:")
-    label_config.grid(row=4, column=0)
+    label_config = tk.Label(middle_frame, text="Config file:")
+    label_config.grid(row=0, column=0)
 
     # Text field for Config
     global config_text
-    config_text = tk.Text(root, height=10, width=40)
-    config_text.grid(row=4, column=1)
+    config_text = scrolledtext.ScrolledText(middle_frame, height=10)
+    config_text.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S)
 
     # Label for Pipeline
-    label_pipeline = tk.Label(root, text="Pipeline file:")
-    label_pipeline.grid(row=5, column=0)
+    label_pipeline = tk.Label(middle_frame, text="Pipeline file:")
+    label_pipeline.grid(row=1, column=0)
 
     # Text field for Pipeline
     global pipeline_text
-    pipeline_text = tk.Text(root, height=10, width=40)
-    pipeline_text.grid(row=5, column=1)
+    pipeline_text = scrolledtext.ScrolledText(middle_frame, height=10)
+    pipeline_text.grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S)
 
     # Update Button
     global next_btn
-    next_btn = tk.Button(root, text="Update", command=update)
-    next_btn.grid(row=6, column=0)
+    next_btn = tk.Button(bottom_frame, text="Update", command=update)
+    next_btn.grid(row=0, column=0)
 
     # Run Button
-    next_btn = tk.Button(root, text="Run", command=run)
-    next_btn.grid(row=6, column=2)
+    next_btn = tk.Button(bottom_frame, text="Run", command=run)
+    next_btn.grid(row=0, column=2)
 
     root.mainloop()
 
