@@ -1,0 +1,202 @@
+[
+  {
+    "tool": "tblaxtx",
+    "name": "tblastx (MP) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_1_blast.html#tblastx",
+    "supports_special": true,
+    "params": {
+      "expect": "0.05"
+    }
+  },
+  {
+    "tool": "add_taxonomy",
+    "name": "add_taxonomy (MP) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#add-taxonomy",
+    "supports_special": true,
+    "params": {
+      "taxonomy": "",
+      "category": ""
+    }
+  },
+  {
+    "tool": "CGF_and_CGA_CDS_processing",
+    "name": "CGF_and_CGA_CDS_processing (MP) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#cgf-and-cga-cds-processing",
+    "supports_special": true,
+    "params": {
+      "start_codons": "ATG",
+      "max_size_difference": "10",
+      "reference_file": "",
+      "pattern": "\".\"",
+      "codon_table": "1",
+      "isoform_min_word_length": "",
+      "isoform_ref_size": ""
+    }
+  },
+  {
+    "tool": "check_contamination",
+    "name": "check_contamination (MP) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#check-contamination",
+    "supports_special": true,
+    "params": {}
+  },
+  {
+    "tool": "disambiguate",
+    "name": "disambiguate (M) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#disambiguate",
+    "supports_special": true,
+    "params": {}
+  },
+  {
+    "tool": "merge",
+    "name": "merge (M) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#merge",
+    "supports_special": false,
+    "params": {}
+  },
+  {
+    "tool": "prefix",
+    "name": "prefix (M) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#prefix",
+    "supports_special": true,
+    "params": {}
+  },
+  {
+    "tool": "prefix_out",
+    "name": "prefix_out (M) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#prefix-out",
+    "supports_special": true,
+    "params": {}
+  },
+  {
+    "tool": "remove_stops",
+    "name": "remove_stops (M) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#remove-stops",
+    "supports_special": true,
+    "params": {}
+  },
+  {
+    "tool": "Clustal_Omega",
+    "name": "Clustal_Omega (S) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_3_alignment.html#clustal-omega",
+    "supports_special": false,
+    "params": {}
+  },
+  {
+    "tool": "Clustal_Omega_codons",
+    "name": "Clustal_Omega_codons (S) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_3_alignment.html#clustal-omega-codons",
+    "supports_special": false,
+    "params": {}
+  },
+  {
+    "tool": "T-coffee",
+    "name": "T-coffee (S) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_3_alignment.html#t-coffee",
+    "supports_special": false,
+    "params": {}
+  },
+  {
+    "tool": "T-coffee_codons",
+    "name": "T-coffee_codons (S) (FASTA-FASTA)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_3_alignment.html#t-coffee-codons",
+    "supports_special": false,
+    "params": {}
+  },
+  {
+    "tool": "Fasttree",
+    "name": "Fasttree (S) (FASTA-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#fasttree",
+    "supports_special": false,
+    "params": {
+      "root": "",
+      "mode": ""
+    }
+  },
+  {
+    "tool": "me_tree",
+    "name": "me_tree (SP) (FASTA-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#me-tree",
+    "supports_special": false,
+    "params": {
+      "root": "",
+      "mode": "",
+      "bootstrap": "500",
+      "treatment": ""
+    }
+  },
+  {
+    "tool": "ml_tree",
+    "name": "ml_tree (SP) (FASTA-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#ml-tree",
+    "supports_special": false,
+    "params": {
+      "root": "",
+      "mode": "",
+      "bootstrap": "500",
+      "treatment": ""
+    }
+  },
+  {
+    "tool": "mp_tree",
+    "name": "mp_tree (SP) (FASTA-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#mp-tree",
+    "supports_special": false,
+    "params": {
+      "root": "",
+      "mode": "",
+      "bootstrap": "500",
+      "treatment": ""
+    }
+  },
+  {
+    "tool": "MrBayes",
+    "name": "MrBayes (SP) (FASTA-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#mrbayes",
+    "supports_special": false,
+    "params": {
+      "root": "",
+      "mode": "",
+      "mb_ngen": "1000000",
+      "mb_burnin": "2500"
+    }
+  },
+  {
+    "tool": "nj_tree",
+    "name": "nj_tree (SP) (FASTA-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#nj-tree",
+    "supports_special": false,
+    "params": {
+      "root": "",
+      "mode": "",
+      "bootstrap": "500",
+      "treatment": ""
+    }
+  },
+  {
+    "tool": "tree_collapser",
+    "name": "tree_collapser (S) (Newick-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#tree-collapser",
+    "supports_special": false,
+    "params": {}
+  },
+  {
+    "tool": "upgma_tree",
+    "name": "upgma_tree (SP) (FASTA-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#upgma-tree",
+    "supports_special": false,
+    "params": {
+      "root": "",
+      "mode": "",
+      "bootstrap": "500",
+      "treatment": ""
+    }
+  },
+  {
+    "tool": "JModel_test",
+    "name": "JModel_test (S) (FASTA-Text)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_5_model_checking.html#model-checking",
+    "supports_special": false,
+    "params": {}
+  }
+]

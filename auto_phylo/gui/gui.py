@@ -5,13 +5,18 @@ from tkinter import font
 import webbrowser
 import os
 import subprocess
+import json
+from typing import List
 
+from auto_phylo.gui.model.Command import Command
+from auto_phylo.gui.model.Commands import Commands
 
-# classes to change when adding new auto-phylo modules. Do not forget to add the new modules to the "Module Selection" as well.
 
 class AutoPhyloDesigner(tk.Tk):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, commands: Commands, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+
+        self._commands: Commands = commands
 
         self.title("auto-phylo GUI")
 
@@ -40,20 +45,7 @@ class AutoPhyloDesigner(tk.Tk):
         # Module Selection
         self.__module_selection_var = tk.StringVar(top_frame)
         self.__module_selection_var.set("Choose a module")  # Default value
-        module_selection_btn = tk.OptionMenu(top_frame, self.__module_selection_var, "tblastx (MP) (FASTA-FASTA)",
-                                             "add_taxonomy (MP) (FASTA-FASTA)",
-                                             "CGF_and_CGA_CDS_processing (MP) (FASTA-FASTA)",
-                                             "check_contamination (MP) (FASTA-FASTA)", "disambiguate (M) (FASTA-FASTA)",
-                                             "merge (M) (FASTA-FASTA)", "prefix (M) (FASTA-FASTA)",
-                                             "prefix_out (M) (FASTA-FASTA)", "remove_stops (M) (FASTA-FASTA)",
-                                             "Clustal_Omega (S) (FASTA-FASTA)",
-                                             "Clustal_Omega_codons (S) (FASTA-FASTA)",
-                                             "T-coffee (S) (FASTA-FASTA)", "T-coffee_codons (S) (FASTA-FASTA)",
-                                             "Fasttree (S) (FASTA-Newick)", "me_tree (SP) (FASTA-Newick)",
-                                             "ml_tree (SP) (FASTA-Newick)", "mp_tree (SP) (FASTA-Newick)",
-                                             "MrBayes (SP) (FASTA-Newick)", "nj_tree (SP) (FASTA-Newick)",
-                                             "tree_collapser (S) (Newick-Newick)", "upgma_tree (SP) (FASTA-Newick)",
-                                             "JModel_test (S) (FASTA-Text)")
+        module_selection_btn = tk.OptionMenu(top_frame, self.__module_selection_var, *self._commands.list_names())
         module_selection_btn.grid(row=0, column=1)
 
         # Information button
@@ -120,51 +112,8 @@ class AutoPhyloDesigner(tk.Tk):
         input_string = self.__module_selection_var.get()
         split_parts = input_string.split(' ')
         selection = split_parts[0]
-        web_address = ""
-        if selection == "tblastx":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_1_blast.html#tblastx"
-        elif selection == "add_taxonomy":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#add-taxonomy"
-        elif selection == "CGF_and_CGA_CDS_processing":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#cgf-and-cga-cds-processing"
-        elif selection == "check_contamination":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#check-contamination"
-        elif selection == "disambiguate":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#disambiguate"
-        elif selection == "merge":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#merge"
-        elif selection == "prefix":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#prefix"
-        elif selection == "prefix_out":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#prefix-out"
-        elif selection == "remove_stops":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#remove-stops"
-        elif selection == "Clustal_Omega":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_3_alignment.html#clustal-omega"
-        elif selection == "Clustal_Omega_codons":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_3_alignment.html#clustal-omega-codons"
-        elif selection == "T-coffee":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_3_alignment.html#t-coffee"
-        elif selection == "T-coffee_codons":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_3_alignment.html#t-coffee-codons"
-        elif selection == "Fasttree":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#fasttree"
-        elif selection == "me_tree":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#me-tree"
-        elif selection == "ml_tree":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#ml-tree"
-        elif selection == "mp_tree":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#mp-tree"
-        elif selection == "MrBayes":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#mrbayes"
-        elif selection == "nj_tree":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#nj-tree"
-        elif selection == "tree_collapser":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#tree-collapser"
-        elif selection == "upgma_tree":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_4_tree_building.html#upgma-tree"
-        elif selection == "JModel_test":
-            web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_5_model_checking.html#model-checking"
+
+        web_address = self._commands.find_by_tool(selection).url
 
         if web_address:
             webbrowser.open(web_address)
@@ -175,118 +124,18 @@ class AutoPhyloDesigner(tk.Tk):
         input_string = self.__module_selection_var.get()
         split_parts = input_string.split(' ')
         selected_option = split_parts[0]
-        if selected_option == "tblastx":
-            search_word = "expect="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("expect=0.05\n")
-            search_word = "query="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("query=query\n")
 
-        if selected_option == "CGF_and_CGA_CDS_processing":
-            search_word = "start_codon="
+        command = self._commands.find_by_tool(selected_option)
+
+        for param in command.list_params():
+            search_word = param + "="
             with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("start_codon=ATG\n")
-            search_word = "max_size_difference="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("max_size_difference=10\n")
-            search_word = "reference_file="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("reference_file=\n")
-            search_word = "pattern="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("pattern=\".\"\n")
-            search_word = "codon_table="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("codon_table=1\n")
-            search_word = "isoform_min_word_length="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("isoform_min_word_length=\n")
-            search_word = "isoform_ref_size="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("isoform_ref_size=\n")
-        if selected_option == "add_taxonomy":
-            search_word = "taxonomy="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("taxonomy=\n")
-            search_word = "category="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("category=\n")
-        if ((selected_option == "fasttree") or (selected_option == "me_tree") or (selected_option == "ml_tree") or (
-            selected_option == "mp_tree") or (selected_option == "me_tree") or (selected_option == "MrBayes") or (
-            selected_option == "nj_tree") or (selected_option == "upgma_tree")):
-            search_word = "root="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("root=\n")
-            search_word = "mode="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("mode=\n")
-        if ((selected_option == "me_tree") or (selected_option == "ml_tree") or (selected_option == "mp_tree") or (
-            selected_option == "me_tree") or (selected_option == "nj_tree") or (selected_option == "upgma_tree")):
-            search_word = "bootstrap="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("bootstrap=500\n")
-            search_word = "treatment="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("treatment=\n")
-        if selected_option == "MrBayes":
-            search_word = "mb_ngen="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("mb_ngen=1000000\n")
-            search_word = "mb_burnin="
-            with open(config_file_path, "r") as config_file:
-                contents = config_file.read()
-                if search_word not in contents:
-                    with open(config_file_path, "a") as config_file:
-                        config_file.write("mb_burnin=2500\n")
+                is_absent = search_word not in config_file.read()
+
+            if is_absent:
+                with open(config_file_path, "a") as config_file:
+                    default_value = command.get_default_param_value(param)
+                    config_file.write(f"{search_word}{default_value}\n")
 
     def __save_pipeline(self):
         working_directory = self.__working_directory_var.get()
@@ -301,18 +150,13 @@ class AutoPhyloDesigner(tk.Tk):
             if self.__special_var.get() == 0:
                 pipeline_file.write(f"\n")
             else:
-                if ((content_to_extract == "tblastx") or (content_to_extract == "add_taxonomy") or (
-                    content_to_extract == "CGF_and_CGA_CDS_processing") or (
-                    content_to_extract == "check_contamination") or (content_to_extract == "disambiguate") or (
-                    content_to_extract == "prefix") or (content_to_extract == "prefix_out") or (
-                    content_to_extract == "remove_stops")):
+                command = self._commands.find_by_tool(content_to_extract)
+                if command.supports_special:
                     pipeline_file.write(f"Special {self.__special_var.get()}\n")
+
         self.__rm_blanks_from_pipeline()
 
-    # classes that do not need to be changed when adding new auto-phylo modules
-
     def __open_web_address1(self):
-        selection = self.__module_selection_var.get()
         web_address = "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_6_special.html#special"
         webbrowser.open(web_address)
 
@@ -329,13 +173,13 @@ class AutoPhyloDesigner(tk.Tk):
             config_file.write("")
         search_word = "SEDA="
         with open(config_file_path, "r") as config_file:
-            contents = config_file.read()
-            if search_word not in contents:
-                with open(config_file_path, "a") as config_file:
-                    config_file.write("#General parameters\n")
-                    config_file.write("SEDA=\"seda:1.6.0-v2304\"\n")
-                    config_file.write("dir=" + working_directory + "\n")
-                    config_file.write("\n#Other parameters\n")
+            is_absent = search_word not in config_file.read()
+        if is_absent:
+            with open(config_file_path, "a") as config_file:
+                config_file.write("#General parameters\n")
+                config_file.write("SEDA=\"seda:1.6.0-v2304\"\n")
+                config_file.write("dir=" + working_directory + "\n")
+                config_file.write("\n#Other parameters\n")
         self.__load_config()
         self.__load_pipeline()
         self.__working_directory_btn.config(state=tk.DISABLED)
@@ -433,7 +277,9 @@ class AutoPhyloDesigner(tk.Tk):
 
 
 def launch():
-    designer = AutoPhyloDesigner()
+    with open("commands.json", "r") as file:
+        commands = json.load(file)
+    designer = AutoPhyloDesigner(Commands(Command(**data) for data in commands))
     designer.mainloop()
 
 
