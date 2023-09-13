@@ -11,24 +11,27 @@ class Command:
         self._params: Dict[str, str] = dict(params)
 
     @property
-    def tool(self):
+    def tool(self) -> str:
         return self._tool
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @property
-    def url(self):
+    def url(self) -> str:
         return self._url
 
     @property
-    def supports_special(self):
+    def supports_special(self) -> bool:
         return self._supports_special
 
     @property
-    def params(self):
-        return MappingProxyType(self._params)
+    def params(self) -> Dict[str, str]:
+        return self._params.copy()
+
+    def has_param(self, param: str) -> bool:
+        return param in self._params
 
     def has_params(self) -> bool:
         return len(self._params) > 0
