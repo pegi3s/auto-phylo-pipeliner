@@ -45,21 +45,21 @@ def basic_pipeline(context: Context) -> PipelineConfiguration:
     return configuration
 
 
-@fixture(name="fixture.pipeline.file.basic")
+@fixture(name="fixture.pipeline.text.basic")
 def basic_pipeline_file(context: Context) -> str:
-    pipeline_file = """
+    pipeline_text = """
         tblaxtx a b
         disambiguate b c Special 10
     """
 
-    context.pipeline_file = pipeline_file
+    context.pipeline_text = pipeline_text
 
-    return pipeline_file
+    return pipeline_text
 
 
-@fixture(name="fixture.config.file.basic")
+@fixture(name="fixture.config.text.basic")
 def basic_config_file(context: Context, seda: str, output_dir: str) -> str:
-    config_file = f"""
+    config_text = f"""
         # General parameters
         SEDA="{seda}"
         dir={output_dir}
@@ -69,9 +69,9 @@ def basic_config_file(context: Context, seda: str, output_dir: str) -> str:
         expect=0.01
     """
 
-    context.config_file = config_file
+    context.config_text = config_text
 
-    return config_file
+    return config_text
 
 
 @fixture(name="fixture.pipeline.advanced")
@@ -174,9 +174,9 @@ def advanced_pipeline(context: Context) -> PipelineConfiguration:
     return configuration
 
 
-@fixture(name="fixture.pipeline.file.advanced")
+@fixture(name="fixture.pipeline.text.advanced")
 def advanced_pipeline_file(context: Context) -> str:
-    pipeline_file = """
+    pipeline_text = """
         tblaxtx a b
         add_taxonomy b c Special 5
         CGF_and_CGA_CDS_processing c d
@@ -186,14 +186,14 @@ def advanced_pipeline_file(context: Context) -> str:
         prefix g h Special 10
     """
 
-    context.pipeline_file = pipeline_file
+    context.pipeline_text = pipeline_text
 
-    return pipeline_file
+    return pipeline_text
 
 
-@fixture(name="fixture.config.file.advanced")
+@fixture(name="fixture.config.text.advanced")
 def advanced_config_file(context: Context, seda: str, output_dir: str) -> str:
-    config_file = f"""
+    config_text = f"""
         # General parameters
         SEDA="{seda}"
         dir={output_dir}
@@ -216,17 +216,17 @@ def advanced_config_file(context: Context, seda: str, output_dir: str) -> str:
         isoform_ref_size=
     """
 
-    context.config_file = config_file
+    context.config_text = config_text
 
-    return config_file
+    return config_text
 
 
 def get_pipeline_registry(*args, **kwargs) -> Dict[str, Tuple[Callable[[Context], Any], Tuple[Any], Dict[str, Any]]]:
     return {
         "fixture.pipeline.basic": (basic_pipeline, args, kwargs),
-        "fixture.pipeline.file.basic": (basic_pipeline_file, args, kwargs),
-        "fixture.config.file.basic": (basic_config_file, args, kwargs),
+        "fixture.pipeline.text.basic": (basic_pipeline_file, args, kwargs),
+        "fixture.config.text.basic": (basic_config_file, args, kwargs),
         "fixture.pipeline.advanced": (advanced_pipeline, args, kwargs),
-        "fixture.pipeline.file.advanced": (advanced_pipeline_file, args, kwargs),
-        "fixture.config.file.advanced": (advanced_config_file, args, kwargs)
+        "fixture.pipeline.text.advanced": (advanced_pipeline_file, args, kwargs),
+        "fixture.config.text.advanced": (advanced_config_file, args, kwargs)
     }
