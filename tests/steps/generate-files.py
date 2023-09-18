@@ -5,7 +5,7 @@ from hamcrest import assert_that, equal_to_ignoring_whitespace
 
 from auto_phylo.gui.io.ConfigurationGenerator import ConfigurationGenerator
 from auto_phylo.gui.io.PipelineGenerator import PipelineGenerator
-from features.fixtures.pipelines import get_pipeline_registry
+from tests.fixtures.pipelines import get_pipeline_registry
 
 
 @given(u"a {pipeline_id} configuration")

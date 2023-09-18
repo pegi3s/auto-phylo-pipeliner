@@ -1,12 +1,12 @@
-from typing import Dict, Callable, Any, List, Tuple
+from typing import Dict, Callable, Any, Tuple
 
 from behave import fixture
 from behave.runner import Context
 
-from auto_phylo.gui.model.Command import Command
-from auto_phylo.gui.model.CommandConfiguration import CommandConfiguration
-from auto_phylo.gui.model.Pipeline import Pipeline
-from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
+from src.auto_phylo.gui.model.Command import Command
+from src.auto_phylo.gui.model.CommandConfiguration import CommandConfiguration
+from src.auto_phylo.gui.model.Pipeline import Pipeline
+from src.auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
 
 
 @fixture(name="fixture.pipeline.basic")

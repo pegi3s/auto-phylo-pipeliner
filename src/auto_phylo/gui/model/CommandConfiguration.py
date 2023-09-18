@@ -1,4 +1,3 @@
-from types import MappingProxyType
 from typing import Optional, Dict, List
 
 from auto_phylo.gui.model.Command import Command
