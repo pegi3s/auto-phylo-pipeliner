@@ -1,0 +1,71 @@
+image: python:3.8-alpine
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  MYPYPATH: "$CI_PROJECT_DIR/src"
+  PYTHONPATH: "$CI_PROJECT_DIR/src"
+
+.install-dependencies:
+  script:
+    - apk add gcc libffi-dev musl-dev
+    - pip install .[dev]
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  tags:
+    - docker
+  script:
+    - echo "Building the application..."
+    - !reference [.install-dependencies, script]
+    - rm -rf dist
+    - stubgen -p src.auto_phylo -o .
+    - python3 -m build
+    - echo "Building complete"
+  artifacts:
+    paths:
+      - dist/
+
+code-check-job:
+  stage: test
+  tags:
+    - docker
+  script:
+    - echo "Checking code..."
+    - !reference [.install-dependencies, script]
+    - pyroma .
+    - mypy -p auto_phylo --check-untyped-defs
+    - echo "Checking code complete"
+
+test-job:
+  stage: test
+  tags:
+    - docker
+  script:
+    - echo "Testing code..."
+    - !reference [.install-dependencies, script]
+    - behave
+    - echo "Testing code complete"
+
+deploy-job:
+  stage: deploy
+  tags:
+    - docker
+  dependencies:
+    - build-job
+  rules:
+    - if: $CI_COMMIT_TAG == null
+      variables:
+        REPOSITORY_URL: "https://maven.sing-group.org/repository/python-snapshots/"
+    - if: $CI_COMMIT_TAG != null
+      variables:
+        REPOSITORY_URL: "https://maven.sing-group.org/repository/python-releases/"
+  script:
+    - echo "Testing code..."
+    - !reference [ .install-dependencies, script ]
+    - twine upload dist/* --verbose --repository-url "$REPOSITORY_URL" -u "$NEXUS_LOGIN" -p "$NEXUS_PASSWORD"
+    - echo "Testing code complete"
