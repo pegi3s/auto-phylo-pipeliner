@@ -1,6 +1,6 @@
 [
   {
-    "tool": "tblaxtx",
+    "tool": "tblastx",
     "name": "tblastx (MP) (FASTA-FASTA)",
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_1_blast.html#tblastx",
     "supports_special": true,

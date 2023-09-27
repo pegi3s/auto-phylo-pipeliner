@@ -13,7 +13,7 @@ from src.auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
 def basic_pipeline(context: Context) -> PipelineConfiguration:
     commands = [
         Command(
-            tool="tblaxtx",
+            tool="tblastx",
             name="tblastx (MP) (FASTA-FASTA)",
             url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_1_blast.html#tblastx",
             supports_special=True,
@@ -48,7 +48,7 @@ def basic_pipeline(context: Context) -> PipelineConfiguration:
 @fixture(name="fixture.pipeline.text.basic")
 def basic_pipeline_file(context: Context) -> str:
     pipeline_text = """
-        tblaxtx a b
+        tblastx a b
         disambiguate b c Special 10
     """
 
@@ -65,7 +65,7 @@ def basic_config_file(context: Context, seda: str, output_dir: str) -> str:
         dir={output_dir}
 
         # Other parameters
-        # tblaxtx
+        # tblastx
         expect=0.01
     """
 
@@ -78,7 +78,7 @@ def basic_config_file(context: Context, seda: str, output_dir: str) -> str:
 def advanced_pipeline(context: Context) -> PipelineConfiguration:
     commands = [
         Command(
-            tool="tblaxtx",
+            tool="tblastx",
             name="tblastx (MP) (FASTA-FASTA)",
             url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_1_blast.html#tblastx",
             supports_special=True,
@@ -177,7 +177,7 @@ def advanced_pipeline(context: Context) -> PipelineConfiguration:
 @fixture(name="fixture.pipeline.text.advanced")
 def advanced_pipeline_file(context: Context) -> str:
     pipeline_text = """
-        tblaxtx a b
+        tblastx a b
         add_taxonomy b c Special 5
         CGF_and_CGA_CDS_processing c d
         check_contamination b e Special 20
@@ -199,7 +199,7 @@ def advanced_config_file(context: Context, seda: str, output_dir: str) -> str:
         dir={output_dir}
 
         # Other parameters
-        # tblaxtx
+        # tblastx
         expect=0.1
 
         # add_taxonomy
