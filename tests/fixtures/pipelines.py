@@ -1,4 +1,5 @@
-from typing import Dict, Callable, Any, Tuple
+from copy import deepcopy
+from typing import Callable, Dict, Any
 
 from behave import fixture
 from behave.runner import Context
@@ -30,17 +31,33 @@ def basic_pipeline(context: Context) -> PipelineConfiguration:
         )
     ]
 
-    pipeline = Pipeline(commands)
+    configuration = PipelineConfiguration(Pipeline(commands))
 
-    configuration = PipelineConfiguration(
-        pipeline,
-        [
-            CommandConfiguration(commands[0], "a", "b", None, {"expect": "0.01"}),
-            CommandConfiguration(commands[1], "b", "c", 10)
-        ]
-    )
+    configuration.add_commands_configurations([
+        CommandConfiguration(commands[0], "a", "b"),
+        CommandConfiguration(commands[1], "b", "c", 10)
+    ])
 
     context.pipeline = configuration
+
+    return configuration
+
+
+@fixture(name="fixture.pipeline.basic.configured")
+def basic_configured_pipeline(context: Context) -> PipelineConfiguration:
+    configuration = deepcopy(basic_pipeline(context))
+
+    commands = configuration.pipeline.commands
+
+    configuration.seda_version = "\"seda:1.6.0-v2304\""
+    configuration.output_dir = "basic_output"
+    configuration.clear_command_configurations()
+    configuration.add_commands_configurations([
+        CommandConfiguration(commands[0], "a", "b", None, {"expect": "0.01"}),
+        CommandConfiguration(commands[1], "b", "c", 10)
+    ])
+
+    context.pipeline_config = configuration
 
     return configuration
 
@@ -58,11 +75,11 @@ def basic_pipeline_file(context: Context) -> str:
 
 
 @fixture(name="fixture.config.text.basic")
-def basic_config_file(context: Context, seda: str, output_dir: str) -> str:
+def basic_config_file(context: Context) -> str:
     config_text = f"""
         # General parameters
-        SEDA="{seda}"
-        dir={output_dir}
+        SEDA="seda:1.6.0-v2304"
+        dir=basic_output
 
         # Other parameters
         # tblastx
@@ -141,35 +158,55 @@ def advanced_pipeline(context: Context) -> PipelineConfiguration:
         )
     ]
 
-    pipeline = Pipeline(commands)
-
-    configuration = PipelineConfiguration(
-        pipeline,
-        [
-            CommandConfiguration(commands[0], "a", "b", None, {
-                "expect": "0.1"
-            }),
-            CommandConfiguration(commands[1], "b", "c", 5, {
-                "taxonomy": "X",
-                "category": "CAT"
-            }),
-            CommandConfiguration(commands[2], "c", "d", None, {
-                "start_codons": "ATG",
-                "max_size_difference": "10",
-                "reference_file": "",
-                "pattern": "\".\"",
-                "codon_table": "1",
-                "isoform_min_word_length": "",
-                "isoform_ref_size": ""
-            }),
-            CommandConfiguration(commands[3], "b", "e", 20, {}),
-            CommandConfiguration(commands[4], "d", "f", None, {}),
-            CommandConfiguration(commands[5], "e", "g", None, {}),
-            CommandConfiguration(commands[6], "g", "h", 10, {})
-        ]
-    )
+    configuration = PipelineConfiguration(Pipeline(commands))
+    configuration.add_commands_configurations([
+        CommandConfiguration(commands[0], "a", "b"),
+        CommandConfiguration(commands[1], "b", "c", 5),
+        CommandConfiguration(commands[2], "c", "d"),
+        CommandConfiguration(commands[3], "b", "e", 20),
+        CommandConfiguration(commands[4], "d", "f"),
+        CommandConfiguration(commands[5], "e", "g"),
+        CommandConfiguration(commands[6], "g", "h", 10)
+    ])
 
     context.pipeline = configuration
+
+    return configuration
+
+
+@fixture(name="fixture.pipeline.advanced.configured")
+def advanced_configured_pipeline(context: Context) -> PipelineConfiguration:
+    configuration = deepcopy(advanced_pipeline(context))
+
+    commands = configuration.pipeline.commands
+
+    configuration.seda_version = "\"seda:1.6.0-v2304\""
+    configuration.output_dir = "advanced_output"
+    configuration.clear_command_configurations()
+    configuration.add_commands_configurations([
+        CommandConfiguration(commands[0], "a", "b", None, {
+            "expect": "0.1"
+        }),
+        CommandConfiguration(commands[1], "b", "c", 5, {
+            "taxonomy": "X",
+            "category": "CAT"
+        }),
+        CommandConfiguration(commands[2], "c", "d", None, {
+            "start_codons": "ATG",
+            "max_size_difference": "10",
+            "reference_file": "",
+            "pattern": "\".\"",
+            "codon_table": "1",
+            "isoform_min_word_length": "",
+            "isoform_ref_size": ""
+        }),
+        CommandConfiguration(commands[3], "b", "e", 20, {}),
+        CommandConfiguration(commands[4], "d", "f", None, {}),
+        CommandConfiguration(commands[5], "e", "g", None, {}),
+        CommandConfiguration(commands[6], "g", "h", 10, {})
+    ])
+
+    context.pipeline_config = configuration
 
     return configuration
 
@@ -192,11 +229,11 @@ def advanced_pipeline_file(context: Context) -> str:
 
 
 @fixture(name="fixture.config.text.advanced")
-def advanced_config_file(context: Context, seda: str, output_dir: str) -> str:
+def advanced_config_file(context: Context) -> str:
     config_text = f"""
         # General parameters
-        SEDA="{seda}"
-        dir={output_dir}
+        SEDA="seda:1.6.0-v2304"
+        dir=advanced_output
 
         # Other parameters
         # tblastx
@@ -221,12 +258,13 @@ def advanced_config_file(context: Context, seda: str, output_dir: str) -> str:
     return config_text
 
 
-def get_pipeline_registry(*args, **kwargs) -> Dict[str, Tuple[Callable[[Context], Any], Tuple[Any], Dict[str, Any]]]:
-    return {
-        "fixture.pipeline.basic": (basic_pipeline, args, kwargs),
-        "fixture.pipeline.text.basic": (basic_pipeline_file, args, kwargs),
-        "fixture.config.text.basic": (basic_config_file, args, kwargs),
-        "fixture.pipeline.advanced": (advanced_pipeline, args, kwargs),
-        "fixture.pipeline.text.advanced": (advanced_pipeline_file, args, kwargs),
-        "fixture.config.text.advanced": (advanced_config_file, args, kwargs)
-    }
+fixture_pipelines: Dict[str, Callable[[], Any]] = {
+    "fixture.pipeline.basic": basic_pipeline,
+    "fixture.pipeline.basic.configured": basic_configured_pipeline,
+    "fixture.pipeline.text.basic": basic_pipeline_file,
+    "fixture.config.text.basic": basic_config_file,
+    "fixture.pipeline.advanced": advanced_pipeline,
+    "fixture.pipeline.advanced.configured": advanced_configured_pipeline,
+    "fixture.pipeline.text.advanced": advanced_pipeline_file,
+    "fixture.config.text.advanced": advanced_config_file
+}

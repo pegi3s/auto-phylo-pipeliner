@@ -1,4 +1,4 @@
-from types import MappingProxyType
+from copy import deepcopy
 from typing import Dict, List
 
 
@@ -8,7 +8,7 @@ class Command:
         self._name: str = name
         self._url: str = url
         self._supports_special: bool = supports_special
-        self._params: Dict[str, str] = dict(params)
+        self._params: Dict[str, str] = params.copy()
 
     @property
     def tool(self) -> str:
@@ -41,3 +41,9 @@ class Command:
 
     def get_default_param_value(self, param: str) -> str:
         return self._params[param]
+
+    def __copy__(self) -> "Command":
+        return Command(self._tool, self._name, self._url, self._supports_special, self._params)
+
+    def __deepcopy__(self, memodict={}) -> "Command":
+        return Command(self._tool, self._name, self._url, self._supports_special, deepcopy(self._params))

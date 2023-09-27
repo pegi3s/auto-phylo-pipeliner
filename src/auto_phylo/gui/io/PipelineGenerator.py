@@ -6,13 +6,14 @@ class PipelineGenerator:
         output = ""
 
         for command in pipeline.pipeline:
-            config = pipeline.get_command_configuration(command)
+            if pipeline.has_command_configuration(command):
+                config = pipeline.get_command_configuration(command)
 
-            output += f"{command.tool} {config.get_input_dir()} {config.get_output_dir()}"
+                output += f"{command.tool} {config.input_dir} {config.output_dir}"
 
-            if command.supports_special and config.has_special():
-                output += f" Special {config.get_special()}"
+                if command.supports_special and config.has_special():
+                    output += f" Special {config.special}"
 
-            output += "\n"
+                output += "\n"
 
         return output
