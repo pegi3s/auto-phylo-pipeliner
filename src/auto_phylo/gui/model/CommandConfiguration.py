@@ -2,11 +2,12 @@ from copy import deepcopy
 from typing import Optional, Dict, List
 
 from auto_phylo.gui.model.Command import Command
+from auto_phylo.gui.model.CommandConfigurationEvent import CommandConfigurationEvent
 from auto_phylo.gui.model.SpecialNotSupportedError import SpecialNotSupportedError
 from auto_phylo.gui.util.Observable import Observable
 
 
-class CommandConfiguration(Observable):
+class CommandConfiguration(Observable[CommandConfigurationEvent]):
     def __init__(self, command: Command,
                  input_dir: Optional[str] = None,
                  output_dir: Optional[str] = None,
@@ -23,15 +24,40 @@ class CommandConfiguration(Observable):
     def command(self) -> Command:
         return self._command
 
+    # @command.setter
+    # def command(self, command: Command) -> None:
+    #     if command is None:
+    #         raise ValueError("command can't be None")
+    #
+    #     if self._command != command:
+    #         old_value = self._command
+    #
+    #         self._command = command
+    #
+    #         self._param_values.clear()
+    #         if not self._command.supports_special:
+    #             self._special = None
+    #
+    #         self._notify_observers(CommandConfigurationEvent("command", old_value, self._command))
+
     @property
     def input_dir(self) -> Optional[str]:
         return self._input_dir
 
     @input_dir.setter
-    def input_dir(self, input_dir: str) -> None:
+    def input_dir(self, input_dir: Optional[str]) -> None:
+        if input_dir is not None:
+            input_dir = input_dir.strip()
+
+            if len(input_dir) == 0:
+                input_dir = None
+
         if self._input_dir != input_dir:
+            old_value = self._input_dir
+
             self._input_dir = input_dir
-            self._notify_observers()
+
+            self._notify_observers(CommandConfigurationEvent("input_dir", old_value, self._input_dir))
 
     def has_input_dir(self) -> bool:
         return self._input_dir is not None
@@ -41,10 +67,19 @@ class CommandConfiguration(Observable):
         return self._output_dir
 
     @output_dir.setter
-    def output_dir(self, output_dir: str) -> None:
+    def output_dir(self, output_dir: Optional[str]) -> None:
+        if output_dir is not None:
+            output_dir = output_dir.strip()
+
+            if len(output_dir) == 0:
+                output_dir = None
+
         if self._output_dir != output_dir:
+            old_value = self._output_dir
+
             self._output_dir = output_dir
-            self._notify_observers()
+
+            self._notify_observers(CommandConfigurationEvent("output_dir", old_value, self._output_dir))
 
     def has_output_dir(self) -> bool:
         return self._output_dir is not None
@@ -57,13 +92,23 @@ class CommandConfiguration(Observable):
         return self._special
 
     @special.setter
-    def special(self, special: int) -> None:
+    def special(self, special: Optional[int]) -> None:
         if not self.command.supports_special:
             raise SpecialNotSupportedError(self._command)
 
+        if special is not None and special < 1:
+            raise ValueError("special must be None or positive")
+
         if self._special != special:
+            old_value = self._special
+
             self._special = special
-            self._notify_observers()
+
+            self._notify_observers(CommandConfigurationEvent("special", old_value, self._special))
+
+    def is_valid(self):
+        return self._input_dir is not None \
+            and self._output_dir is not None
 
     def is_special_supported(self) -> bool:
         return self._command.supports_special
@@ -87,23 +132,63 @@ class CommandConfiguration(Observable):
     def list_param(self) -> List[str]:
         return self._command.list_params()
 
+    def has_param_value(self, param: str) -> bool:
+        return param in self._param_values
+
     def get_param_value(self, param: str) -> str:
         return self._param_values[param]
 
-    def set_param_value(self, param: str, value: str) -> None:
+    def set_param_value(self, param: str, new_value: str) -> None:
+        print(param, new_value)
         if not self._command.has_param(param):
             raise ValueError(f"{param} is not a valid param")
 
-        self._param_values[param] = value
+        if param not in self._param_values or self._param_values[param] != new_value:
+            old_value = self._param_values[param] if param in self._param_values else None
+
+            self._param_values[param] = new_value
+
+            self._notify_observers(CommandConfigurationEvent(f"param_values[{param}]", old_value, new_value))
 
     def remove_param_value(self, param: str) -> None:
         if not self._command.has_param(param):
             raise ValueError(f"{param} is not a valid param")
 
+        if param not in self._param_values:
+            raise ValueError(f"{param} does not have a value")
+
+        old_value = self._param_values[param]
+
         del self._param_values[param]
+
+        self._notify_observers(CommandConfigurationEvent(f"param_values[{param}]", old_value, None))
+
+    def set_param_values(self, params: Dict[str, str]) -> None:
+        old_value = self._param_values
+
+        self._param_values = params.copy()
+
+        self._notify_observers(CommandConfigurationEvent(f"param_values", old_value, params))
+
+    def clear_param_values(self) -> None:
+        old_value = self._param_values
+
+        self._param_values.clear()
+
+        self._notify_observers(CommandConfigurationEvent(f"param_values", old_value, None))
 
     def has_param_values(self):
         return len(self._param_values) > 0
+
+    def copy_to(self, command_config: "CommandConfiguration") -> None:
+        command_config.input_dir = self._input_dir
+        command_config.output_dir = self._output_dir
+
+        if command_config.is_special_supported() and self.has_special():
+            command_config.special = self._special
+
+        if command_config.command.tool == self._command.tool:
+            command_config.set_param_values(self._param_values)
 
     def __copy__(self) -> "CommandConfiguration":
         return CommandConfiguration(

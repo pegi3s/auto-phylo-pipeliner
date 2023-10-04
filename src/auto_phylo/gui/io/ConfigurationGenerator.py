@@ -1,3 +1,5 @@
+from typing import Dict
+
 from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
 
 
@@ -12,15 +14,14 @@ dir={pipeline.output_dir}
 """
 
         for command in pipeline.pipeline:
-            if pipeline.has_command_configuration(command):
-                config = pipeline.get_command_configuration(command)
+            param_values: Dict[str, str] = pipeline.get_command_parameters(command)
 
-                if config.has_param_values():
-                    output += f"# {command.tool}\n"
+            if len(param_values) > 0:
+                output += f"# {command.tool}\n"
 
-                    for key, value in config.param_values.items():
-                        output += f"{key}={value}\n"
+                for key, value in param_values.items():
+                    output += f"{key}={value}\n"
 
-                    output += "\n"
+                output += "\n"
 
-        return output
+        return output.strip()

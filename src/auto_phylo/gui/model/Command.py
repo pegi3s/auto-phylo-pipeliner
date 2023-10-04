@@ -42,6 +42,13 @@ class Command:
     def get_default_param_value(self, param: str) -> str:
         return self._params[param]
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self) -> str:
+        return (f"Command[tool={self._tool}, name={self._name}, url={self._url}, "
+                f"supports_special={self._supports_special}, params={self._params}]")
+
     def __copy__(self) -> "Command":
         return Command(self._tool, self._name, self._url, self._supports_special, self._params)
 

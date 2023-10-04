@@ -34,6 +34,7 @@ rfc3986==2.0.0
 rich==13.5.2
 SecretStorage==3.3.3
 six==1.16.0
+sv-ttk==2.5.5
 tomli==2.0.1
 trove-classifiers==2023.8.7
 twine==4.0.2

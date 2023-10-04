@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Callable, Dict, Any
+from typing import Callable, Dict, Any, Optional
 
 from behave import fixture
 from behave.runner import Context
@@ -31,9 +31,7 @@ def basic_pipeline(context: Context) -> PipelineConfiguration:
         )
     ]
 
-    configuration = PipelineConfiguration(Pipeline(commands))
-
-    configuration.add_commands_configurations([
+    configuration = PipelineConfiguration(Pipeline(commands), command_configs=[
         CommandConfiguration(commands[0], "a", "b"),
         CommandConfiguration(commands[1], "b", "c", 10)
     ])
@@ -51,11 +49,8 @@ def basic_configured_pipeline(context: Context) -> PipelineConfiguration:
 
     configuration.seda_version = "\"seda:1.6.0-v2304\""
     configuration.output_dir = "basic_output"
-    configuration.clear_command_configurations()
-    configuration.add_commands_configurations([
-        CommandConfiguration(commands[0], "a", "b", None, {"expect": "0.01"}),
-        CommandConfiguration(commands[1], "b", "c", 10)
-    ])
+    configuration.set_command_configuration(0, CommandConfiguration(commands[0], "a", "b", None, {"expect": "0.01"}))
+    configuration.set_command_configuration(1, CommandConfiguration(commands[1], "b", "c", 10))
 
     context.pipeline_config = configuration
 
@@ -92,7 +87,7 @@ def basic_config_file(context: Context) -> str:
 
 
 @fixture(name="fixture.pipeline.advanced")
-def advanced_pipeline(context: Context) -> PipelineConfiguration:
+def advanced_pipeline(context: Optional[Context] = None) -> PipelineConfiguration:
     commands = [
         Command(
             tool="tblastx",
@@ -158,8 +153,7 @@ def advanced_pipeline(context: Context) -> PipelineConfiguration:
         )
     ]
 
-    configuration = PipelineConfiguration(Pipeline(commands))
-    configuration.add_commands_configurations([
+    configuration = PipelineConfiguration(Pipeline(commands), command_configs=[
         CommandConfiguration(commands[0], "a", "b"),
         CommandConfiguration(commands[1], "b", "c", 5),
         CommandConfiguration(commands[2], "c", "d"),
@@ -169,44 +163,43 @@ def advanced_pipeline(context: Context) -> PipelineConfiguration:
         CommandConfiguration(commands[6], "g", "h", 10)
     ])
 
-    context.pipeline = configuration
+    if context is not None:
+        context.pipeline = configuration
 
     return configuration
 
 
 @fixture(name="fixture.pipeline.advanced.configured")
-def advanced_configured_pipeline(context: Context) -> PipelineConfiguration:
+def advanced_configured_pipeline(context: Optional[Context] = None) -> PipelineConfiguration:
     configuration = deepcopy(advanced_pipeline(context))
 
     commands = configuration.pipeline.commands
 
     configuration.seda_version = "\"seda:1.6.0-v2304\""
     configuration.output_dir = "advanced_output"
-    configuration.clear_command_configurations()
-    configuration.add_commands_configurations([
-        CommandConfiguration(commands[0], "a", "b", None, {
-            "expect": "0.1"
-        }),
-        CommandConfiguration(commands[1], "b", "c", 5, {
-            "taxonomy": "X",
-            "category": "CAT"
-        }),
-        CommandConfiguration(commands[2], "c", "d", None, {
-            "start_codons": "ATG",
-            "max_size_difference": "10",
-            "reference_file": "",
-            "pattern": "\".\"",
-            "codon_table": "1",
-            "isoform_min_word_length": "",
-            "isoform_ref_size": ""
-        }),
-        CommandConfiguration(commands[3], "b", "e", 20, {}),
-        CommandConfiguration(commands[4], "d", "f", None, {}),
-        CommandConfiguration(commands[5], "e", "g", None, {}),
-        CommandConfiguration(commands[6], "g", "h", 10, {})
-    ])
+    configuration.set_command_configuration(0, CommandConfiguration(commands[0], "a", "b", None, {
+        "expect": "0.1"
+    }))
+    configuration.set_command_configuration(1, CommandConfiguration(commands[1], "b", "c", 5, {
+        "taxonomy": "X",
+        "category": "CAT"
+    }))
+    configuration.set_command_configuration(2, CommandConfiguration(commands[2], "c", "d", None, {
+        "start_codons": "ATG",
+        "max_size_difference": "10",
+        "reference_file": "",
+        "pattern": "\".\"",
+        "codon_table": "1",
+        "isoform_min_word_length": "",
+        "isoform_ref_size": ""
+    }))
+    configuration.set_command_configuration(3, CommandConfiguration(commands[3], "b", "e", 20, {}))
+    configuration.set_command_configuration(4, CommandConfiguration(commands[4], "d", "f", None, {}))
+    configuration.set_command_configuration(5, CommandConfiguration(commands[5], "e", "g", None, {}))
+    configuration.set_command_configuration(6, CommandConfiguration(commands[6], "g", "h", 10, {}))
 
-    context.pipeline_config = configuration
+    if context is not None:
+        context.pipeline_config = configuration
 
     return configuration
 

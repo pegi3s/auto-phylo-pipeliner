@@ -3,7 +3,8 @@ from auto_phylo.gui.component.AutoPhyloDesigner import AutoPhyloDesigner
 
 
 def launch():
-    designer = AutoPhyloDesigner(load_commands())
+    designer = AutoPhyloDesigner()
+    designer.geometry("900x600")
     designer.mainloop()
 
 
