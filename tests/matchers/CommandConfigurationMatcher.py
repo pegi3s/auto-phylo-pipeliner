@@ -19,5 +19,5 @@ class CommandConfigurationMatcher(EntityMatcher[CommandConfiguration]):
             .and_has_same_dict("param_values")
 
 
-def equals_to_command_config(command_config: CommandConfiguration) -> "CommandConfigurationMatcher":
+def equal_to_command_config(command_config: CommandConfiguration) -> "CommandConfigurationMatcher":
     return CommandConfigurationMatcher(command_config)

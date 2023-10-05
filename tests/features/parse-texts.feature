@@ -20,6 +20,18 @@ Feature: parsing texts
       | basic       |
       | advanced    |
 
+  Scenario Outline: parse run text
+    Given a <pipeline_id> pipeline and a <run_id> run text
+    When we parse the run text
+    Then we have the auto phylo version in the text
+
+    Examples: Pipelines
+      | pipeline_id | run_id |
+      | basic       | semver |
+      | basic       | latest |
+      | advanced    | semver |
+      | advanced    | latest |
+
   Scenario Outline: parse a bad pipeline text
     Given a pipeline configuration text with a <pipeline_error_id> error
     When we parse this bad pipeline configuration text
@@ -48,3 +60,12 @@ Feature: parsing texts
       | unsupported_param    |
       | invalid_lines        |
       | multiple_errors      |
+
+  Scenario Outline: parse a bad run text
+    Given a run file text with a <run_file_error_id> error
+    When we parse this bad run file text
+    Then we have all the existent errors identified in the run file
+
+    Examples: Pipelines
+      | run_file_error_id |
+      | missing_version   |

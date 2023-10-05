@@ -1,5 +1,6 @@
 from typing import Dict
 
+from auto_phylo.gui.io import strip_lines
 from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
 
 
@@ -24,4 +25,4 @@ dir={pipeline.output_dir}
 
                 output += "\n"
 
-        return output.strip()
+        return strip_lines(output)

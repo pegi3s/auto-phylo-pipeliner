@@ -16,5 +16,5 @@ class PipelineMatcher(EntityMatcher[Pipeline]):
             .has_same_list("commands", CommandMatcher)
 
 
-def equals_to_pipeline(pipeline: Pipeline) -> "PipelineMatcher":
+def equal_to_pipeline(pipeline: Pipeline) -> "PipelineMatcher":
     return PipelineMatcher(pipeline)

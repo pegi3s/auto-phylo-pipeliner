@@ -152,7 +152,8 @@ class PipelineConfiguration(Observable):
         index = event.index
 
         if event.action == PipelineChangeType.ADD or event.action == PipelineChangeType.INSERT:
-            new_config = CommandConfiguration(pipeline.commands[index])
+            command = pipeline.commands[index]
+            new_config = CommandConfiguration(command, param_values=command.params)
 
             self._command_configs.insert(index, new_config)
             new_config.add_callback(self._on_command_config_change)
@@ -178,7 +179,7 @@ class PipelineConfiguration(Observable):
             self._command_configs.clear()
             self._notify_observers(PipelineConfigurationChangeEvent("command_configs", command_configs, None))
 
-    def _on_command_config_change(self, command_config: CommandConfiguration, event: CommandConfigurationEvent) -> None:
+    def _on_command_config_change(self, command_config: CommandConfiguration, _: CommandConfigurationEvent) -> None:
         if command_config in self._command_configs:
             index = self._command_configs.index(command_config)
 

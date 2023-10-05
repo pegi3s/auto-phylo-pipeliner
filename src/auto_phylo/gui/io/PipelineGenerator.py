@@ -1,3 +1,4 @@
+from auto_phylo.gui.io import strip_lines
 from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
 
 
@@ -15,4 +16,4 @@ class PipelineGenerator:
 
             output += "\n"
 
-        return output
+        return strip_lines(output)

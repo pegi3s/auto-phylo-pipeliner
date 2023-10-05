@@ -106,7 +106,7 @@ def pipeline_with_invalid_command_lines(context: Context) -> Optional[Tuple[int,
 
 
 @fixture(name="fixture.pipeline.text.error.multiple_errors")
-def pipeline_with_multiple_errors(context: Context) -> str:
+def pipeline_with_multiple_errors(context: Optional[Context] = None) -> str:
     pipeline_text = """
         # Invalid command
         blaster a b
@@ -121,7 +121,8 @@ def pipeline_with_multiple_errors(context: Context) -> str:
         check_contamination d e Special Ten
     """
 
-    context.pipeline_text = pipeline_text.strip()
+    if context is not None:
+        context.pipeline_text = pipeline_text.strip()
 
     return pipeline_text
 

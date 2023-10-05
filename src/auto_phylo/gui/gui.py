@@ -1,10 +1,9 @@
-from auto_phylo.gui import load_commands
 from auto_phylo.gui.component.AutoPhyloDesigner import AutoPhyloDesigner
 
 
 def launch():
     designer = AutoPhyloDesigner()
-    designer.geometry("900x600")
+    designer.minsize(width=600, height=400)
     designer.mainloop()
 
 

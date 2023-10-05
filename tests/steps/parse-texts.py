@@ -4,13 +4,16 @@ from io import StringIO
 from behave import *
 from behave.fixture import use_fixture_by_tag
 from behave.runner import Context
+from hamcrest import equal_to
 from hamcrest.core import assert_that
 from hamcrest.core import is_
 
 from auto_phylo.gui.io.ConfigurationParser import ConfigurationParser
 from auto_phylo.gui.io.PipelineParser import PipelineParser
+from auto_phylo.gui.io.RunFileParser import RunFileParser
 from fixtures.pipelines import fixture_pipelines
-from tests.matchers.PipelineConfigurationMatcher import equals_to_pipeline_config
+from fixtures.run_files import fixture_runs
+from tests.matchers.PipelineConfigurationMatcher import equal_to_pipeline_config
 
 
 @given(u"a {pipeline_id} pipeline text")
@@ -27,7 +30,7 @@ def step_impl(context: Context) -> None:
 
 @then(u"we have a valid pipeline")
 def step_impl(context: Context) -> None:
-    assert_that(context.parsed_pipeline, is_(equals_to_pipeline_config(context.pipeline)))
+    assert_that(context.parsed_pipeline, is_(equal_to_pipeline_config(context.pipeline)))
 
 
 @given(u"a {pipeline_id} pipeline configuration text")
@@ -45,4 +48,21 @@ def step_impl(context: Context) -> None:
 
 @then(u"we have a valid pipeline configuration")
 def step_impl(context: Context) -> None:
-    assert_that(context.parsed_pipeline, is_(equals_to_pipeline_config(context.pipeline_config)))
+    assert_that(context.parsed_pipeline, is_(equal_to_pipeline_config(context.pipeline_config)))
+
+
+@given(u"a {pipeline_id} pipeline and a {run_id} run text")
+def step_impl(context: Context, pipeline_id: str, run_id: str) -> None:
+    use_fixture_by_tag(f"fixture.run.{pipeline_id}.{run_id}.text", context, fixture_runs)
+    use_fixture_by_tag(f"fixture.run.{pipeline_id}.{run_id}.version", context, fixture_runs)
+
+
+@when(u"we parse the run text")
+def step_impl(context: Context) -> None:
+    parser = RunFileParser()
+    context.parsed_version = parser.parse(StringIO(context.run_text))
+
+
+@then(u"we have the auto phylo version in the text")
+def step_impl(context: Context) -> None:
+    assert_that(context.parsed_version, is_(equal_to(context.run_version)))

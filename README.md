@@ -1,2 +1,5 @@
-# Auto-phylo GUI
-A GUI to create auto-phylo pipelines.
+# auto-phylo GUI
+
+auto-phylo is a pipeline maker software for phylogenetic studies.
+
+auto-phylo GUI is a graphical user interface to rapidly create and modify pipelines for auto-phylo.

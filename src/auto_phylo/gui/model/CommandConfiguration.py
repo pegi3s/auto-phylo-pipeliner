@@ -24,22 +24,6 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
     def command(self) -> Command:
         return self._command
 
-    # @command.setter
-    # def command(self, command: Command) -> None:
-    #     if command is None:
-    #         raise ValueError("command can't be None")
-    #
-    #     if self._command != command:
-    #         old_value = self._command
-    #
-    #         self._command = command
-    #
-    #         self._param_values.clear()
-    #         if not self._command.supports_special:
-    #             self._special = None
-    #
-    #         self._notify_observers(CommandConfigurationEvent("command", old_value, self._command))
-
     @property
     def input_dir(self) -> Optional[str]:
         return self._input_dir
@@ -139,7 +123,6 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
         return self._param_values[param]
 
     def set_param_value(self, param: str, new_value: str) -> None:
-        print(param, new_value)
         if not self._command.has_param(param):
             raise ValueError(f"{param} is not a valid param")
 

@@ -14,5 +14,5 @@ class CommandMatcher(EntityMatcher[Command]):
             .and_has_same_dict("params")
 
 
-def equals_to_command(command: Command) -> "CommandMatcher":
+def equal_to_command(command: Command) -> "CommandMatcher":
     return CommandMatcher(command)

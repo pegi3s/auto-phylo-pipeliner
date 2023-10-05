@@ -16,5 +16,5 @@ class PipelineConfigurationMatcher(EntityMatcher[PipelineConfiguration]):
             .and_has_same_list("command_configs", CommandConfigurationMatcher)
 
 
-def equals_to_pipeline_config(pipeline_config: PipelineConfiguration) -> "PipelineConfigurationMatcher":
+def equal_to_pipeline_config(pipeline_config: PipelineConfiguration) -> "PipelineConfigurationMatcher":
     return PipelineConfigurationMatcher(pipeline_config)

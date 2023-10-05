@@ -17,16 +17,95 @@ from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
 from auto_phylo.gui.model.PipelineConfigurationChangeEvent import PipelineConfigurationChangeEvent
 
 
+class PipelineDesigner(Frame):
+    _PAD_X: Final[Tuple[int, int]] = (4, 4)
+    _PAD_Y: Final[Tuple[int, int]] = (2, 2)
+
+    def __init__(self, pipeline_configuration: PipelineConfiguration, commands: Commands = load_commands(),
+                 master: Optional[Widget] = None, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+
+        self._commands: Commands = commands
+        self._pipeline_configuration: PipelineConfiguration = pipeline_configuration
+
+        self._mediators: List[_CommandConfigFormMediator] = []
+        self._btn_new: Button = Button(self, text="Add command", command=self._on_add_command)
+
+        self._rebuild_form()
+        self._pipeline_configuration.add_callback(self._on_pipeline_config_change)
+
+    @property
+    def pipeline_configuration(self) -> PipelineConfiguration:
+        return self._pipeline_configuration
+
+    @pipeline_configuration.setter
+    def pipeline_configuration(self, pipeline_config: PipelineConfiguration) -> None:
+        if self._pipeline_configuration != pipeline_config:
+            self._pipeline_configuration.remove_callback(self._on_pipeline_config_change)
+
+            self._rebuild_form()
+
+            self._pipeline_configuration.add_callback(self._on_pipeline_config_change)
+
+    def configure(self, **kwargs):
+        if "state" in kwargs:
+            self._change_children_state(kwargs.pop("state"))
+        if kwargs:
+            super().configure(**kwargs)
+
+    def _rebuild_form(self):
+        for mediator in self._mediators:
+            mediator.destroy()
+
+        self._mediators.clear()
+
+        for index in range(0, len(self._pipeline_configuration.pipeline)):
+            self._mediators.append(_CommandConfigFormMediator(self, index, self._pipeline_configuration, self._commands,
+                                                              padx=PipelineDesigner._PAD_X,
+                                                              pady=PipelineDesigner._PAD_Y))
+        self._btn_new.grid(row=len(self._mediators), column=0, columnspan=10, padx=PipelineDesigner._PAD_X,
+                           pady=PipelineDesigner._PAD_Y)
+
+    def _change_children_state(self, state: str) -> None:
+        for child in self.winfo_children():
+            child.configure(state=state)  # type: ignore
+
+    def _get_first_unselected_command(self) -> Command:
+        for command in self._commands:
+            if not self._pipeline_configuration.pipeline.has_command(command):
+                return command
+
+        return self._commands.commands[0]
+
+    def _add_command_config_form(self, index: int) -> None:
+        self._mediators.append(_CommandConfigFormMediator(self, index, self._pipeline_configuration, self._commands,
+                                                          padx=PipelineDesigner._PAD_X,
+                                                          pady=PipelineDesigner._PAD_Y))
+        self._btn_new.grid(row=len(self._mediators), column=0, columnspan=10,
+                           padx=PipelineDesigner._PAD_X, pady=PipelineDesigner._PAD_Y)
+
+    def _on_pipeline_config_change(self, _: PipelineConfiguration, event: PipelineConfigurationChangeEvent) -> None:
+        if event.attribute == "command_configs" and event.old_value is None:
+            index = event.new_value[0]  # type: ignore
+
+            self._add_command_config_form(index)
+
+    def _on_add_command(self) -> None:
+        index = self._pipeline_configuration.pipeline.add_command(self._get_first_unselected_command())
+
+        self._add_command_config_form(index)
+
+
 class _CommandConfigFormMediator:
     def __init__(self, master: Frame,
                  index: int,
-                 pipeline_config: PipelineConfiguration,
+                 pipeline_configuration: PipelineConfiguration,
                  commands: Commands,
                  **kwargs):
         self._master: Frame = master
         self._index: int = index
-        self._command_config: CommandConfiguration = pipeline_config.get_command_configuration(index)
-        self._pipeline_config: PipelineConfiguration = pipeline_config
+        self._command_config: CommandConfiguration = pipeline_configuration.get_command_configuration(index)
+        self._pipeline_configuration: PipelineConfiguration = pipeline_configuration
         self._commands: Commands = commands
         self._grid_kwargs: Dict[str, Any] = kwargs
 
@@ -35,6 +114,7 @@ class _CommandConfigFormMediator:
 
         self._sv_om_commands = StringVar(master)
         self._om_commands = OptionMenu(master, self._sv_om_commands, *commands.list_names())
+        self._om_commands.configure(width=25)
 
         self._e_input = Entry(master, width=10)
         self._e_output = Entry(master, width=10)
@@ -68,9 +148,9 @@ class _CommandConfigFormMediator:
         self._btn_remove.configure(command=self._on_remove_command)
 
         self._command_config.add_callback(self._on_command_config_change)
-        self._pipeline_config.pipeline.add_callback(self._on_pipeline_change)
+        self._pipeline_configuration.pipeline.add_callback(self._on_pipeline_change)
 
-    def _locate_components(self):
+    def _locate_components(self) -> None:
         self._btn_up.grid(row=self._index, column=0, **self._grid_kwargs)
         self._btn_down.grid(row=self._index, column=1, sticky="nsew", **self._grid_kwargs)
         self._om_commands.grid(row=self._index, column=2, sticky="nsew", **self._grid_kwargs)
@@ -82,7 +162,7 @@ class _CommandConfigFormMediator:
         self._btn_info.grid(row=self._index, column=8, sticky="nsew", **self._grid_kwargs)
         self._btn_remove.grid(row=self._index, column=9, **self._grid_kwargs)
 
-    def _remove_components(self):
+    def destroy(self) -> None:
         self._btn_up.destroy()
         self._btn_down.destroy()
         self._om_commands.destroy()
@@ -95,7 +175,7 @@ class _CommandConfigFormMediator:
         self._btn_remove.destroy()
 
         self._command_config.remove_callback(self._on_command_config_change)
-        self._pipeline_config.pipeline.remove_callback(self._on_pipeline_change)
+        self._pipeline_configuration.pipeline.remove_callback(self._on_pipeline_change)
 
     def _get_special_value(self) -> Optional[int]:
         try:
@@ -122,7 +202,7 @@ class _CommandConfigFormMediator:
                 self._update_arrows()
         elif event.action == PipelineChangeType.REMOVE:
             if self._index == event.index:
-                self._remove_components()
+                self.destroy()
             elif self._index > event.index:
                 self._index -= 1
                 self._update_position()
@@ -141,7 +221,7 @@ class _CommandConfigFormMediator:
 
             self._command_config.copy_to(new_configuration)
 
-            self._pipeline_config.replace_command_configuration(self._index, new_configuration)
+            self._pipeline_configuration.replace_command_configuration(self._index, new_configuration)
 
     def _on_input_change(self, event: Event) -> None:
         self._command_config.input_dir = event.widget.get()
@@ -161,16 +241,16 @@ class _CommandConfigFormMediator:
         self._command_config.special = self._get_special_value()
 
     def _on_down_command(self) -> None:
-        self._pipeline_config.pipeline.swap_command_position(self._index, self._index + 1)
+        self._pipeline_configuration.pipeline.swap_command_position(self._index, self._index + 1)
 
     def _on_up_command(self) -> None:
-        self._pipeline_config.pipeline.swap_command_position(self._index, self._index - 1)
+        self._pipeline_configuration.pipeline.swap_command_position(self._index, self._index - 1)
 
     def _on_remove_command(self) -> None:
-        self._pipeline_config.pipeline.remove_command(self._index)
+        self._pipeline_configuration.pipeline.remove_command(self._index)
 
     def _on_params_command(self) -> None:
-        dialog = ParamConfigurationDialog(self._master, self._command_config)
+        dialog = ParamConfigurationDialog(self._command_config, self._master)
         dialog.wait_visibility()
         dialog.grab_set()
 
@@ -184,7 +264,8 @@ class _CommandConfigFormMediator:
 
     def _update_arrows(self):
         self._btn_up.config(state=DISABLED if self._index == 0 else NORMAL)
-        self._btn_down.config(state=DISABLED if self._index == len(self._pipeline_config.pipeline) - 1 else NORMAL)
+        self._btn_down.config(
+            state=DISABLED if self._index == len(self._pipeline_configuration.pipeline) - 1 else NORMAL)
 
     def _update_command(self) -> None:
         self._sv_om_commands.set(self._command_config.command.name)
@@ -232,52 +313,3 @@ class _CommandConfigFormMediator:
             else:
                 self._bv_chk_special.set(False)
                 self._sb_special.config(state=DISABLED)  # type: ignore
-
-
-class PipelineDesigner(Frame):
-    _PAD_X: Final[Tuple[int, int]] = (4, 4)
-    _PAD_Y: Final[Tuple[int, int]] = (2, 2)
-
-    def __init__(self, pipeline_config: PipelineConfiguration, commands: Commands = load_commands(),
-                 master: Optional[Widget] = None, *args, **kwargs):
-        super().__init__(master, *args, **kwargs)
-
-        self._commands: Commands = commands
-        self._pipeline_config: PipelineConfiguration = pipeline_config
-
-        self._mediators: List[_CommandConfigFormMediator] = []
-        for index in range(0, len(self._pipeline_config.pipeline)):
-            self._mediators.append(_CommandConfigFormMediator(self, index, self._pipeline_config, self._commands,
-                                                              padx=PipelineDesigner._PAD_X,
-                                                              pady=PipelineDesigner._PAD_Y))
-
-        self._btn_new: Button = Button(self, text="Add command", command=self._on_add_command)
-        self._btn_new.grid(row=len(self._mediators), column=0, columnspan=10, padx=PipelineDesigner._PAD_X,
-                           pady=PipelineDesigner._PAD_Y)
-
-        self._pipeline_config.add_callback(self._on_pipeline_config_change)
-
-    def _get_first_unselected_command(self) -> Command:
-        for command in self._commands:
-            if not self._pipeline_config.pipeline.has_command(command):
-                return command
-
-        return self._commands.commands[0]
-
-    def _on_pipeline_config_change(self, _: PipelineConfiguration, event: PipelineConfigurationChangeEvent) -> None:
-        if event.attribute == "command_configs" and event.old_value is None:
-            index = event.new_value[0]  # type: ignore
-
-            self._add_command_config_form(index)
-
-    def _on_add_command(self) -> None:
-        index = self._pipeline_config.pipeline.add_command(self._get_first_unselected_command())
-
-        self._add_command_config_form(index)
-
-    def _add_command_config_form(self, index):
-        self._mediators.append(_CommandConfigFormMediator(self, index, self._pipeline_config, self._commands,
-                                                          padx=PipelineDesigner._PAD_X,
-                                                          pady=PipelineDesigner._PAD_Y))
-        self._btn_new.grid(row=len(self._mediators), column=0, columnspan=10,
-                           padx=PipelineDesigner._PAD_X, pady=PipelineDesigner._PAD_Y)

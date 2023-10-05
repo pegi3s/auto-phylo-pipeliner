@@ -11,7 +11,7 @@ from src.auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
 
 
 @fixture(name="fixture.pipeline.basic")
-def basic_pipeline(context: Context) -> PipelineConfiguration:
+def basic_pipeline(context: Optional[Context] = None) -> PipelineConfiguration:
     commands = [
         Command(
             tool="tblastx",
@@ -36,13 +36,14 @@ def basic_pipeline(context: Context) -> PipelineConfiguration:
         CommandConfiguration(commands[1], "b", "c", 10)
     ])
 
-    context.pipeline = configuration
+    if context is not None:
+        context.pipeline = configuration
 
     return configuration
 
 
 @fixture(name="fixture.pipeline.basic.configured")
-def basic_configured_pipeline(context: Context) -> PipelineConfiguration:
+def basic_configured_pipeline(context: Optional[Context] = None) -> PipelineConfiguration:
     configuration = deepcopy(basic_pipeline(context))
 
     commands = configuration.pipeline.commands
@@ -52,7 +53,8 @@ def basic_configured_pipeline(context: Context) -> PipelineConfiguration:
     configuration.set_command_configuration(0, CommandConfiguration(commands[0], "a", "b", None, {"expect": "0.01"}))
     configuration.set_command_configuration(1, CommandConfiguration(commands[1], "b", "c", 10))
 
-    context.pipeline_config = configuration
+    if context is not None:
+        context.pipeline_config = configuration
 
     return configuration
 
