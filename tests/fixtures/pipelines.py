@@ -4,10 +4,10 @@ from typing import Callable, Dict, Any, Optional
 from behave import fixture
 from behave.runner import Context
 
-from src.auto_phylo.gui.model.Command import Command
-from src.auto_phylo.gui.model.CommandConfiguration import CommandConfiguration
-from src.auto_phylo.gui.model.Pipeline import Pipeline
-from src.auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
+from src.auto_phylo.pipeliner.model.Command import Command
+from src.auto_phylo.pipeliner.model.CommandConfiguration import CommandConfiguration
+from src.auto_phylo.pipeliner.model.Pipeline import Pipeline
+from src.auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfiguration
 
 
 @fixture(name="fixture.pipeline.basic")

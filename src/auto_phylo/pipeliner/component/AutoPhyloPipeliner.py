@@ -8,21 +8,21 @@ from typing import Optional, Tuple, Final
 
 import sv_ttk
 
-from auto_phylo.gui import load_commands
-from auto_phylo.gui.component.ParseErrorViewerDialog import ParseErrorViewerDialog
-from auto_phylo.gui.component.PipelineDesigner import PipelineDesigner
-from auto_phylo.gui.io.ConfigurationGenerator import ConfigurationGenerator
-from auto_phylo.gui.io.ConfigurationParser import ConfigurationParser
-from auto_phylo.gui.io.ParseError import ParseError
-from auto_phylo.gui.io.PipelineGenerator import PipelineGenerator
-from auto_phylo.gui.io.PipelineParser import PipelineParser
-from auto_phylo.gui.io.RunFileGenerator import RunFileGenerator
-from auto_phylo.gui.io.RunFileParser import RunFileParser
-from auto_phylo.gui.model.Commands import Commands
-from auto_phylo.gui.model.Pipeline import Pipeline
-from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
-from auto_phylo.gui.model.PipelineConfigurationChangeEvent import PipelineConfigurationChangeEvent
-from auto_phylo.gui.util.EventListeners import EventListeners, EventQueue
+from auto_phylo.pipeliner import load_commands
+from auto_phylo.pipeliner.component.ParseErrorViewerDialog import ParseErrorViewerDialog
+from auto_phylo.pipeliner.component.PipelineDesigner import PipelineDesigner
+from auto_phylo.pipeliner.io.ConfigurationGenerator import ConfigurationGenerator
+from auto_phylo.pipeliner.io.ConfigurationParser import ConfigurationParser
+from auto_phylo.pipeliner.io.ParseError import ParseError
+from auto_phylo.pipeliner.io.PipelineGenerator import PipelineGenerator
+from auto_phylo.pipeliner.io.PipelineParser import PipelineParser
+from auto_phylo.pipeliner.io.RunFileGenerator import RunFileGenerator
+from auto_phylo.pipeliner.io.RunFileParser import RunFileParser
+from auto_phylo.pipeliner.model.Commands import Commands
+from auto_phylo.pipeliner.model.Pipeline import Pipeline
+from auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfiguration
+from auto_phylo.pipeliner.model.PipelineConfigurationChangeEvent import PipelineConfigurationChangeEvent
+from auto_phylo.pipeliner.util.EventListeners import EventListeners, EventQueue
 
 
 def _directory_has_pipeline_files(directory: str) -> bool:
@@ -37,7 +37,7 @@ def _directory_has_pipeline_files(directory: str) -> bool:
     return any(sub_path.is_file() for sub_path in sub_paths)
 
 
-class AutoPhyloDesigner(Tk):
+class AutoPhyloPipeliner(Tk):
     def __init__(self,
                  pipeline_configuration: Optional[PipelineConfiguration] = None,
                  commands: Commands = load_commands(),
@@ -57,12 +57,12 @@ class AutoPhyloDesigner(Tk):
         self._configuration_parser: ConfigurationParser = ConfigurationParser()
         self._run_file_parser: RunFileParser = RunFileParser()
 
-        self.title("Auto-phylo pipeline designer")
+        self.title("auto-phylo-pipeliner")
         sv_ttk.use_light_theme()
 
         self._toolbar: _Toolbar = _Toolbar(auto_phylo_version, self)
         self._tab_control: Notebook = Notebook(self)
-        self._status_bar: _StatusBar = _StatusBar("Welcome to Auto-phylo pipeline designer")
+        self._status_bar: _StatusBar = _StatusBar("Welcome to auto-phylo-pipeliner")
 
         self._frm_designer: Frame = Frame(self._tab_control)
         self._frm_pipeline: Frame = Frame(self._tab_control)

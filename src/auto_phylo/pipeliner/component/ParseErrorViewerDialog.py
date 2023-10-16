@@ -4,7 +4,7 @@ from tkinter.font import NORMAL
 from tkinter.ttk import Label, Button
 from typing import Optional, List
 
-from auto_phylo.gui.io.ParseError import ParseError
+from auto_phylo.pipeliner.io.ParseError import ParseError
 
 
 class ParseErrorViewerDialog(Toplevel):

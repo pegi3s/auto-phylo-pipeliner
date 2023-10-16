@@ -2,8 +2,8 @@ import json
 from importlib import resources
 
 import auto_phylo
-from auto_phylo.gui.model.Command import Command
-from auto_phylo.gui.model.Commands import Commands
+from auto_phylo.pipeliner.model.Command import Command
+from auto_phylo.pipeliner.model.Commands import Commands
 
 
 def load_commands() -> Commands:

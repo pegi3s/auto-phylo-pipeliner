@@ -1,6 +1,6 @@
 from typing import List
 
-from auto_phylo.gui.model.Pipeline import Pipeline
+from auto_phylo.pipeliner.model.Pipeline import Pipeline
 from matchers.EntityMatcher import EntityMatcher
 from tests.matchers.CommandMatcher import CommandMatcher
 

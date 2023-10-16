@@ -3,7 +3,7 @@ from typing import Iterable, List, Optional
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 
-from auto_phylo.gui.io.ParseError import ParseError
+from auto_phylo.pipeliner.io.ParseError import ParseError
 
 
 class ParseErrorLinesMatcher(BaseMatcher[ParseError]):

@@ -1,6 +1,6 @@
 from builtins import Exception
 
-from auto_phylo.gui.model.Command import Command
+from auto_phylo.pipeliner.model.Command import Command
 
 
 class SpecialNotSupportedError(Exception):

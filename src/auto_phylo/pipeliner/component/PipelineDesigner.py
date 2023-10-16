@@ -4,17 +4,17 @@ from tkinter.constants import NORMAL, DISABLED
 from tkinter.ttk import Frame, OptionMenu, Entry, Spinbox, Button, Checkbutton
 from typing import Optional, Dict, Any, List, Final, Tuple
 
-from auto_phylo.gui import load_commands
-from auto_phylo.gui.component.ParamConfigurationDialog import ParamConfigurationDialog
-from auto_phylo.gui.model.Command import Command
-from auto_phylo.gui.model.CommandConfiguration import CommandConfiguration
-from auto_phylo.gui.model.CommandConfigurationEvent import CommandConfigurationEvent
-from auto_phylo.gui.model.Commands import Commands
-from auto_phylo.gui.model.Pipeline import Pipeline
-from auto_phylo.gui.model.PipelineChangeEvent import PipelineChangeEvent
-from auto_phylo.gui.model.PipelineChangeType import PipelineChangeType
-from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
-from auto_phylo.gui.model.PipelineConfigurationChangeEvent import PipelineConfigurationChangeEvent
+from auto_phylo.pipeliner import load_commands
+from auto_phylo.pipeliner.component.ParamConfigurationDialog import ParamConfigurationDialog
+from auto_phylo.pipeliner.model.Command import Command
+from auto_phylo.pipeliner.model.CommandConfiguration import CommandConfiguration
+from auto_phylo.pipeliner.model.CommandConfigurationEvent import CommandConfigurationEvent
+from auto_phylo.pipeliner.model.Commands import Commands
+from auto_phylo.pipeliner.model.Pipeline import Pipeline
+from auto_phylo.pipeliner.model.PipelineChangeEvent import PipelineChangeEvent
+from auto_phylo.pipeliner.model.PipelineChangeType import PipelineChangeType
+from auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfiguration
+from auto_phylo.pipeliner.model.PipelineConfigurationChangeEvent import PipelineConfigurationChangeEvent
 
 
 class PipelineDesigner(Frame):

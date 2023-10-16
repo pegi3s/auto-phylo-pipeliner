@@ -4,7 +4,7 @@ from typing import Callable, Dict, Any, Optional
 from behave import fixture
 from behave.runner import Context
 
-from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
+from auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfiguration
 from fixtures.pipelines import basic_configured_pipeline, advanced_configured_pipeline
 
 

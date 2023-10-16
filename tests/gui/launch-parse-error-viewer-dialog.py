@@ -1,9 +1,9 @@
 from io import StringIO
 
-from auto_phylo.gui.component.ParseErrorViewerDialog import ParseErrorViewerDialog
-from auto_phylo.gui.io import strip_lines
-from auto_phylo.gui.io.ParseError import ParseError
-from auto_phylo.gui.io.PipelineParser import PipelineParser
+from auto_phylo.pipeliner.component.ParseErrorViewerDialog import ParseErrorViewerDialog
+from auto_phylo.pipeliner.io import strip_lines
+from auto_phylo.pipeliner.io.ParseError import ParseError
+from auto_phylo.pipeliner.io.PipelineParser import PipelineParser
 from fixtures.pipeline_errors import pipeline_with_multiple_errors
 
 if __name__ == "__main__":

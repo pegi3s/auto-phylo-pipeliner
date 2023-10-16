@@ -1,10 +1,10 @@
 from copy import deepcopy
 from typing import Optional, Dict, List
 
-from auto_phylo.gui.model.Command import Command
-from auto_phylo.gui.model.CommandConfigurationEvent import CommandConfigurationEvent
-from auto_phylo.gui.model.SpecialNotSupportedError import SpecialNotSupportedError
-from auto_phylo.gui.util.Observable import Observable
+from auto_phylo.pipeliner.model.Command import Command
+from auto_phylo.pipeliner.model.CommandConfigurationEvent import CommandConfigurationEvent
+from auto_phylo.pipeliner.model.SpecialNotSupportedError import SpecialNotSupportedError
+from auto_phylo.pipeliner.util.Observable import Observable
 
 
 class CommandConfiguration(Observable[CommandConfigurationEvent]):

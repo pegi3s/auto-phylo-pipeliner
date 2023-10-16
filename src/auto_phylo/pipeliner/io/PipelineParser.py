@@ -1,12 +1,12 @@
 import re
 from typing import TextIO, Dict, List
 
-from auto_phylo.gui import load_commands
-from auto_phylo.gui.io.ParseError import ParseError
-from auto_phylo.gui.model.CommandConfiguration import CommandConfiguration
-from auto_phylo.gui.model.Commands import Commands
-from auto_phylo.gui.model.Pipeline import Pipeline
-from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
+from auto_phylo.pipeliner import load_commands
+from auto_phylo.pipeliner.io.ParseError import ParseError
+from auto_phylo.pipeliner.model.CommandConfiguration import CommandConfiguration
+from auto_phylo.pipeliner.model.Commands import Commands
+from auto_phylo.pipeliner.model.Pipeline import Pipeline
+from auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfiguration
 
 
 class PipelineParser:

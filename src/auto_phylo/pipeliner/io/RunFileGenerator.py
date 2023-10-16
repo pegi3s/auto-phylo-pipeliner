@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from auto_phylo.gui.io import strip_lines
-from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
+from auto_phylo.pipeliner.io import strip_lines
+from auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfiguration
 
 
 class RunFileGenerator:

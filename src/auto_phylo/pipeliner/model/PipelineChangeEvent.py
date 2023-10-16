@@ -1,6 +1,6 @@
 from typing import Optional
 
-from auto_phylo.gui.model.PipelineChangeType import PipelineChangeType
+from auto_phylo.pipeliner.model.PipelineChangeType import PipelineChangeType
 
 
 class PipelineChangeEvent:

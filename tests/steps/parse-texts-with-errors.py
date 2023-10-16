@@ -5,10 +5,10 @@ from behave.fixture import use_fixture_by_tag
 from behave.runner import Context
 from hamcrest.core import assert_that
 
-from auto_phylo.gui.io.ConfigurationParser import ConfigurationParser
-from auto_phylo.gui.io.ParseError import ParseError
-from auto_phylo.gui.io.PipelineParser import PipelineParser
-from auto_phylo.gui.io.RunFileParser import RunFileParser
+from auto_phylo.pipeliner.io.ConfigurationParser import ConfigurationParser
+from auto_phylo.pipeliner.io.ParseError import ParseError
+from auto_phylo.pipeliner.io.PipelineParser import PipelineParser
+from auto_phylo.pipeliner.io.RunFileParser import RunFileParser
 from fixtures.pipeline_errors import fixture_pipeline_errors
 from fixtures.pipelines import fixture_pipelines
 from fixtures.run_file_errors import fixture_run_file_errors

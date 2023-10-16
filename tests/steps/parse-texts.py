@@ -8,9 +8,9 @@ from hamcrest import equal_to
 from hamcrest.core import assert_that
 from hamcrest.core import is_
 
-from auto_phylo.gui.io.ConfigurationParser import ConfigurationParser
-from auto_phylo.gui.io.PipelineParser import PipelineParser
-from auto_phylo.gui.io.RunFileParser import RunFileParser
+from auto_phylo.pipeliner.io.ConfigurationParser import ConfigurationParser
+from auto_phylo.pipeliner.io.PipelineParser import PipelineParser
+from auto_phylo.pipeliner.io.RunFileParser import RunFileParser
 from fixtures.pipelines import fixture_pipelines
 from fixtures.run_files import fixture_runs
 from tests.matchers.PipelineConfigurationMatcher import equal_to_pipeline_config

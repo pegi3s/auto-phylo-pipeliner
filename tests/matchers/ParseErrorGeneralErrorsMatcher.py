@@ -3,7 +3,7 @@ from typing import Iterable, List, Optional
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 
-from auto_phylo.gui.io.ParseError import ParseError
+from auto_phylo.pipeliner.io.ParseError import ParseError
 
 
 class ParseErrorGeneralErrorsMatcher(BaseMatcher[ParseError]):
@@ -13,7 +13,7 @@ class ParseErrorGeneralErrorsMatcher(BaseMatcher[ParseError]):
 
     def _matches(self, actual_entity: ParseError) -> bool:
         actual_general_errors = None if actual_entity.general_errors is None else sorted(actual_entity.general_errors)
-        
+
         return self._expected_general_errors == actual_general_errors
 
     def describe_to(self, description: Description) -> None:

@@ -1,10 +1,10 @@
 from copy import deepcopy
 from typing import List, Optional, Iterable, Iterator, Sized, Union
 
-from auto_phylo.gui.model.Command import Command
-from auto_phylo.gui.model.PipelineChangeEvent import PipelineChangeEvent
-from auto_phylo.gui.model.PipelineChangeType import PipelineChangeType
-from auto_phylo.gui.util.Observable import Observable
+from auto_phylo.pipeliner.model.Command import Command
+from auto_phylo.pipeliner.model.PipelineChangeEvent import PipelineChangeEvent
+from auto_phylo.pipeliner.model.PipelineChangeType import PipelineChangeType
+from auto_phylo.pipeliner.util.Observable import Observable
 
 
 class PipelineIterator(Iterator[Command]):

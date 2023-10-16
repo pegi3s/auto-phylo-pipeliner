@@ -1,7 +1,7 @@
 import re
 from typing import TextIO
 
-from auto_phylo.gui.io.ParseError import ParseError
+from auto_phylo.pipeliner.io.ParseError import ParseError
 
 
 class RunFileParser:

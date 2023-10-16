@@ -1,4 +1,4 @@
-from auto_phylo.gui.model.PipelineConfiguration import PipelineConfiguration
+from auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfiguration
 from matchers.EntityMatcher import EntityMatcher
 from tests.matchers.CommandConfigurationMatcher import CommandConfigurationMatcher
 from tests.matchers.PipelineMatcher import PipelineMatcher

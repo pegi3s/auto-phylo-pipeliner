@@ -1,8 +1,8 @@
-from auto_phylo.gui.component.AutoPhyloDesigner import AutoPhyloDesigner
+from auto_phylo.pipeliner.component.AutoPhyloPipeliner import AutoPhyloPipeliner
 
 
 def launch():
-    designer = AutoPhyloDesigner()
+    designer = AutoPhyloPipeliner()
     designer.minsize(width=600, height=400)
     designer.mainloop()
 

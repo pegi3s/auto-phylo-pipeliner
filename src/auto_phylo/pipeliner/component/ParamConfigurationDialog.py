@@ -2,7 +2,7 @@ from tkinter import Toplevel, Misc, Entry, StringVar
 from tkinter.ttk import Button, Label
 from typing import Optional
 
-from auto_phylo.gui.model.CommandConfiguration import CommandConfiguration
+from auto_phylo.pipeliner.model.CommandConfiguration import CommandConfiguration
 
 
 class ParamConfigurationDialog(Toplevel):

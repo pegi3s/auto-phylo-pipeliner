@@ -1,14 +1,14 @@
 from copy import deepcopy
 from typing import List, Optional, Union, Dict
 
-from auto_phylo.gui.model.Command import Command
-from auto_phylo.gui.model.CommandConfiguration import CommandConfiguration
-from auto_phylo.gui.model.CommandConfigurationEvent import CommandConfigurationEvent
-from auto_phylo.gui.model.Pipeline import Pipeline
-from auto_phylo.gui.model.PipelineChangeEvent import PipelineChangeEvent
-from auto_phylo.gui.model.PipelineChangeType import PipelineChangeType
-from auto_phylo.gui.model.PipelineConfigurationChangeEvent import PipelineConfigurationChangeEvent
-from auto_phylo.gui.util.Observable import Observable
+from auto_phylo.pipeliner.model.Command import Command
+from auto_phylo.pipeliner.model.CommandConfiguration import CommandConfiguration
+from auto_phylo.pipeliner.model.CommandConfigurationEvent import CommandConfigurationEvent
+from auto_phylo.pipeliner.model.Pipeline import Pipeline
+from auto_phylo.pipeliner.model.PipelineChangeEvent import PipelineChangeEvent
+from auto_phylo.pipeliner.model.PipelineChangeType import PipelineChangeType
+from auto_phylo.pipeliner.model.PipelineConfigurationChangeEvent import PipelineConfigurationChangeEvent
+from auto_phylo.pipeliner.util.Observable import Observable
 
 
 class PipelineConfiguration(Observable):

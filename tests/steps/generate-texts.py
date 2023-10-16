@@ -3,9 +3,9 @@ from behave.fixture import use_fixture_by_tag
 from behave.runner import Context
 from hamcrest import assert_that, equal_to_ignoring_whitespace, is_
 
-from auto_phylo.gui.io.ConfigurationGenerator import ConfigurationGenerator
-from auto_phylo.gui.io.PipelineGenerator import PipelineGenerator
-from auto_phylo.gui.io.RunFileGenerator import RunFileGenerator
+from auto_phylo.pipeliner.io.ConfigurationGenerator import ConfigurationGenerator
+from auto_phylo.pipeliner.io.PipelineGenerator import PipelineGenerator
+from auto_phylo.pipeliner.io.RunFileGenerator import RunFileGenerator
 from fixtures.run_files import fixture_runs
 from tests.fixtures.pipelines import fixture_pipelines
 

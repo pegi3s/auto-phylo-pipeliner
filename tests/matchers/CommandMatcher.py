@@ -1,5 +1,5 @@
 from matchers.EntityMatcher import EntityMatcher
-from auto_phylo.gui.model.Command import Command
+from auto_phylo.pipeliner.model.Command import Command
 
 
 class CommandMatcher(EntityMatcher[Command]):

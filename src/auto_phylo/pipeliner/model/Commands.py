@@ -1,7 +1,7 @@
 from copy import deepcopy
 from typing import List, Iterable, Iterator
 
-from auto_phylo.gui.model.Command import Command
+from auto_phylo.pipeliner.model.Command import Command
 
 
 class CommandsIterator(Iterator[Command]):
