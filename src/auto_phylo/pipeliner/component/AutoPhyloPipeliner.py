@@ -306,7 +306,7 @@ class _Toolbar(Frame):
         self._build_components(auto_phylo_version)
 
     def _build_components(self, auto_phylo_version: str):
-        btn_new_pipeline = Button(self, text="New pipeline", command=self._on_new_pipeline)
+        btn_new_pipeline = Button(self, text="Load / Create pipeline", command=self._on_new_pipeline)
         btn_change_theme = Button(self, text="Change theme", command=sv_ttk.toggle_theme)
 
         lbl_auto_phylo_version = Label(self, text="Auto-phylo version")
