@@ -379,8 +379,8 @@ class _DesignerFrame(Frame):
         self._e_seda_version: Entry = Entry(self._top_frame, textvariable=self._sv_e_seda_version)
         self._e_seda_version.bind("<FocusOut>", self._on_seda_version_change)
 
-        self._btn_working_dir.pack(side=LEFT, padx=4)
         self._lbl_working_dir.pack(side=LEFT, padx=4)
+        self._btn_working_dir.pack(side=LEFT, padx=4)
 
         self._e_seda_version.pack(side=RIGHT, fill=Y, padx=4)
         self._lbl_seda_version.pack(side=RIGHT, padx=4)
@@ -412,7 +412,7 @@ class _DesignerFrame(Frame):
             self._sv_lbl_working_dir.set("<No working directory selected>")
         else:
             self._sv_btn_working_dir.set("Change")
-            self._sv_lbl_working_dir.set(self._pipeline_configuration.output_dir)
+            self._sv_lbl_working_dir.set(f"Working directory: {self._pipeline_configuration.output_dir}")
 
     def _update_seda_version_components(self):
         if self._pipeline_configuration.seda_version is None:

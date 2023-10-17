@@ -3,7 +3,7 @@ from auto_phylo.pipeliner.component.AutoPhyloPipeliner import AutoPhyloPipeliner
 
 def launch():
     designer = AutoPhyloPipeliner()
-    designer.minsize(width=600, height=400)
+    designer.minsize(width=900, height=600)
     designer.mainloop()
 
 
