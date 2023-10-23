@@ -41,7 +41,7 @@ class AutoPhyloPipeliner(Tk):
     def __init__(self,
                  pipeline_configuration: Optional[PipelineConfiguration] = None,
                  commands: Commands = load_commands(),
-                 auto_phylo_version: str = "1.0.0",
+                 auto_phylo_version: str = "2.0.0",
                  *args, **kwargs):
         super().__init__(*args, *kwargs)
 

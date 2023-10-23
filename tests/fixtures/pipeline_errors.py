@@ -142,20 +142,19 @@ def configuration_with_missing_seda(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expect=0.1
+        tblastx_expect=0.1
 
         # add_taxonomy
-        taxonomy=X
-        category=CAT
+        add_tax_taxonomy_header=X
 
         # CGF_and_CGA_CDS_processing
-        start_codons=ATG
-        max_size_difference=10
-        reference_file=
-        pattern="."
-        codon_table=1
-        isoform_min_word_length=
-        isoform_ref_size=
+        cgf_cga_start_codon=ATG
+        cgf_cga_max_size_difference=10
+        cgf_cga_reference_file=
+        cgf_cga_pattern="."
+        cgf_cga_codon_table=1
+        cgf_cga_isoform_min_word_length=
+        cgf_cga_isoform_ref_size=
     """
 
     context.config_text = config_text.strip()
@@ -186,20 +185,19 @@ def configuration_with_missing_seda_version(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expect=0.1
+        tblastx_expect=0.1
 
         # add_taxonomy
-        taxonomy=X
-        category=CAT
+        add_tax_taxonomy_header=X
 
         # CGF_and_CGA_CDS_processing
-        start_codons=ATG
-        max_size_difference=10
-        reference_file=
-        pattern="."
-        codon_table=1
-        isoform_min_word_length=
-        isoform_ref_size=
+        cgf_cga_start_codon=ATG
+        cgf_cga_max_size_difference=10
+        cgf_cga_reference_file=
+        cgf_cga_pattern="."
+        cgf_cga_codon_table=1
+        cgf_cga_isoform_min_word_length=
+        cgf_cga_isoform_ref_size=
     """
 
     context.config_text = config_text.strip()
@@ -229,20 +227,19 @@ def configuration_with_missing_dir(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expect=0.1
+        tblastx_expect=0.1
 
         # add_taxonomy
-        taxonomy=X
-        category=CAT
+        add_tax_taxonomy_header=X
 
         # CGF_and_CGA_CDS_processing
-        start_codons=ATG
-        max_size_difference=10
-        reference_file=
-        pattern="."
-        codon_table=1
-        isoform_min_word_length=
-        isoform_ref_size=
+        cgf_cga_start_codon=ATG
+        cgf_cga_max_size_difference=10
+        cgf_cga_reference_file=
+        cgf_cga_pattern="."
+        cgf_cga_codon_table=1
+        cgf_cga_isoform_min_word_length=
+        cgf_cga_isoform_ref_size=
     """
 
     context.config_text = config_text.strip()
@@ -273,20 +270,19 @@ def configuration_with_missing_dir_value(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expect=0.1
+        tblastx_expect=0.1
 
         # add_taxonomy
-        taxonomy=X
-        category=CAT
+        add_tax_taxonomy_header=X
 
         # CGF_and_CGA_CDS_processing
-        start_codons=ATG
-        max_size_difference=10
-        reference_file=
-        pattern="."
-        codon_table=1
-        isoform_min_word_length=
-        isoform_ref_size=
+        cgf_cga_start_codon=ATG
+        cgf_cga_max_size_difference=10
+        cgf_cga_reference_file=
+        cgf_cga_pattern="."
+        cgf_cga_codon_table=1
+        cgf_cga_isoform_min_word_length=
+        cgf_cga_isoform_ref_size=
     """
 
     context.config_text = config_text.strip()
@@ -317,20 +313,19 @@ def configuration_with_unsupported_param(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expectation=0.1
+        tblastx_expectation=0.1
 
         # add_taxonomy
-        taxonomy=X
-        category=CAT
+        add_tax_taxonomy_header=X
 
         # CGF_and_CGA_CDS_processing
-        start_codons=ATG
-        max_size_difference=10
-        reference_file=
-        pattern="."
-        codon_table=1
-        isoform_min_word_length=
-        isoform_ref_size=
+        cgf_cga_start_codon=ATG
+        cgf_cga_max_size_difference=10
+        cgf_cga_reference_file=
+        cgf_cga_pattern="."
+        cgf_cga_codon_table=1
+        cgf_cga_isoform_min_word_length=
+        cgf_cga_isoform_ref_size=
     """
 
     context.config_text = config_text.strip()
@@ -361,22 +356,21 @@ def configuration_with_invalid_lines(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expect=0.1
+        tblastx_expect=0.1
         invalid line 1
 
         # add_taxonomy
-        taxonomy=X
-        category=CAT
+        add_tax_taxonomy_header=X
 
         # CGF_and_CGA_CDS_processing
-        start_codons=ATG
-        max_size_difference=10
-        reference_file=
+        cgf_cga_start_codon=ATG
+        cgf_cga_max_size_difference=10
+        cgf_cga_reference_file=
         invalid_line=2=not_valid
-        pattern="."
-        codon_table=1
-        isoform_min_word_length=
-        isoform_ref_size=
+        cgf_cga_pattern="."
+        cgf_cga_codon_table=1
+        cgf_cga_isoform_min_word_length=
+        cgf_cga_isoform_ref_size=
         =not_valid
     """
 
@@ -387,7 +381,7 @@ def configuration_with_invalid_lines(context: Context) -> str:
 
 @fixture(name="fixture.config.text.error.invalid_lines.lines")
 def configuration_with_invalid_lines_lines(context: Context) -> Optional[Tuple[int, ...]]:
-    context.line_errors = tuple([7, 17, 22])
+    context.line_errors = tuple([7, 16, 21])
 
     return context.line_errors
 
@@ -407,23 +401,21 @@ def configuration_with_multiple_errors(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expect=0.1
-        expectation
+        tblastx_expectation=0.1
         invalid line 1
 
         # add_taxonomy
-        taxonomy=X
-        category=CAT
+        add_tax_taxonomy_header=X
 
         # CGF_and_CGA_CDS_processing
-        start_codons=ATG
-        max_size_difference=10
-        reference_file=
+        cgf_cga_start_codon=ATG
+        cgf_cga_max_size_difference=10
+        cgf_cga_reference_file=
         invalid_line=2=not_valid
-        pattern="."
-        codon_table=1
-        isoform_min_word_length=
-        isoform_ref_size=
+        cgf_cga_pattern="."
+        cgf_cga_codon_table=1
+        cgf_cga_isoform_min_word_length=
+        cgf_cga_isoform_ref_size=
         =not_valid
     """
 
@@ -434,7 +426,7 @@ def configuration_with_multiple_errors(context: Context) -> str:
 
 @fixture(name="fixture.config.text.error.multiple_errors.lines")
 def configuration_with_multiple_errors_lines(context: Context) -> Optional[Tuple[int, ...]]:
-    context.line_errors = (1, 6, 7, 17, 22)
+    context.line_errors = (1, 5, 6, 15, 20)
 
     return context.line_errors
 

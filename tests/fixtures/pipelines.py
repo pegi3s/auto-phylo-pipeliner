@@ -16,16 +16,17 @@ def basic_pipeline(context: Optional[Context] = None) -> PipelineConfiguration:
         Command(
             tool="tblastx",
             name="tblastx (MP) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_1_blast.html#tblastx",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_1_blast.html#tblastx",
             supports_special=True,
             params={
-                "expect": "0.05"
+                "tblastx_query": "",
+                "tblastx_expect": "0.05"
             }
         ),
         Command(
             tool="disambiguate",
             name="disambiguate (M) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#disambiguate",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#disambiguate",
             supports_special=True,
             params={}
         )
@@ -50,7 +51,8 @@ def basic_configured_pipeline(context: Optional[Context] = None) -> PipelineConf
 
     configuration.seda_version = "\"seda:1.6.0-v2304\""
     configuration.output_dir = "basic_output"
-    configuration.set_command_configuration(0, CommandConfiguration(commands[0], "a", "b", None, {"expect": "0.01"}))
+    configuration.set_command_configuration(0, CommandConfiguration(commands[0], "a", "b", None,
+                                                                    {"tblastx_expect": "0.01"}))
     configuration.set_command_configuration(1, CommandConfiguration(commands[1], "b", "c", 10))
 
     if context is not None:
@@ -80,7 +82,7 @@ def basic_config_file(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expect=0.01
+        tblastx_expect=0.01
     """
 
     context.config_text = config_text
@@ -94,62 +96,65 @@ def advanced_pipeline(context: Optional[Context] = None) -> PipelineConfiguratio
         Command(
             tool="tblastx",
             name="tblastx (MP) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_1_blast.html#tblastx",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_1_blast.html#tblastx",
             supports_special=True,
             params={
-                "expect": "0.05"
+                "tblastx_query": "",
+                "tblastx_expect": "0.05"
             }
         ),
         Command(
             tool="add_taxonomy",
             name="add_taxonomy (MP) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#add-taxonomy",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#add-taxonomy",
             supports_special=True,
             params={
-                "taxonomy": "",
-                "category": ""
+                "add_tax_taxonomy_header": ""
             }
         ),
         Command(
             tool="CGF_and_CGA_CDS_processing",
             name="CGF_and_CGA_CDS_processing (MP) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#cgf-and-cga-cds-processing",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#cgf-and-cga-cds-processing",
             supports_special=True,
             params={
-                "start_codons": "ATG",
-                "max_size_difference": "10",
-                "reference_file": "",
-                "pattern": "\".\"",
-                "codon_table": "1",
-                "isoform_min_word_length": "",
-                "isoform_ref_size": ""
+                "cgf_cga_start_codon": "ATG",
+                "cgf_cga_max_size_difference": "10",
+                "cgf_cga_reference_file": "",
+                "cgf_cga_pattern": "\".\"",
+                "cgf_cga_codon_table": "1",
+                "cgf_cga_isoform_min_word_length": "",
+                "cgf_cga_isoform_ref_size": ""
             }
         ),
         Command(
             tool="check_contamination",
             name="check_contamination (MP) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#check-contamination",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#check-contamination",
             supports_special=True,
-            params={}
+            params={
+                "check_cont_taxonomy": "",
+                "check_cont_category": ""
+            }
         ),
         Command(
             tool="disambiguate",
             name="disambiguate (M) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#disambiguate",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#disambiguate",
             supports_special=True,
             params={}
         ),
         Command(
             tool="merge",
             name="merge (M) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#merge",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#merge",
             supports_special=False,
             params={}
         ),
         Command(
             tool="prefix",
             name="prefix (M) (FASTA-FASTA)",
-            url="http://evolution6.i3s.up.pt/static/auto-phylo/docs/modules_2_fasta_processing.html#prefix",
+            url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#prefix",
             supports_special=True,
             params={}
         )
@@ -180,20 +185,19 @@ def advanced_configured_pipeline(context: Optional[Context] = None) -> PipelineC
     configuration.seda_version = "\"seda:1.6.0-v2304\""
     configuration.output_dir = "advanced_output"
     configuration.set_command_configuration(0, CommandConfiguration(commands[0], "a", "b", None, {
-        "expect": "0.1"
+        "tblastx_expect": "0.1"
     }))
     configuration.set_command_configuration(1, CommandConfiguration(commands[1], "b", "c", 5, {
-        "taxonomy": "X",
-        "category": "CAT"
+        "add_tax_taxonomy_header": "X"
     }))
     configuration.set_command_configuration(2, CommandConfiguration(commands[2], "c", "d", None, {
-        "start_codons": "ATG",
-        "max_size_difference": "10",
-        "reference_file": "",
-        "pattern": "\".\"",
-        "codon_table": "1",
-        "isoform_min_word_length": "",
-        "isoform_ref_size": ""
+        "cgf_cga_start_codon": "ATG",
+        "cgf_cga_max_size_difference": "10",
+        "cgf_cga_reference_file": "",
+        "cgf_cga_pattern": "\".\"",
+        "cgf_cga_codon_table": "1",
+        "cgf_cga_isoform_min_word_length": "",
+        "cgf_cga_isoform_ref_size": ""
     }))
     configuration.set_command_configuration(3, CommandConfiguration(commands[3], "b", "e", 20, {}))
     configuration.set_command_configuration(4, CommandConfiguration(commands[4], "d", "f", None, {}))
@@ -232,20 +236,19 @@ def advanced_config_file(context: Context) -> str:
 
         # Other parameters
         # tblastx
-        expect=0.1
+        tblastx_expect=0.1
 
         # add_taxonomy
-        taxonomy=X
-        category=CAT
+        add_tax_taxonomy_header=X
 
         # CGF_and_CGA_CDS_processing
-        start_codons=ATG
-        max_size_difference=10
-        reference_file=
-        pattern="."
-        codon_table=1
-        isoform_min_word_length=
-        isoform_ref_size=
+        cgf_cga_start_codon=ATG
+        cgf_cga_max_size_difference=10
+        cgf_cga_reference_file=
+        cgf_cga_pattern="."
+        cgf_cga_codon_table=1
+        cgf_cga_isoform_min_word_length=
+        cgf_cga_isoform_ref_size=
     """
 
     context.config_text = config_text
