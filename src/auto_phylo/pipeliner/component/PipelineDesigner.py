@@ -3,6 +3,8 @@ from tkinter import Widget, StringVar, Event, BooleanVar
 from tkinter.constants import NORMAL, DISABLED
 from tkinter.ttk import Frame, OptionMenu, Entry, Spinbox, Button, Checkbutton
 from typing import Optional, Dict, Any, List, Final, Tuple
+import os
+import sys
 
 from auto_phylo.pipeliner import load_commands
 from auto_phylo.pipeliner.component.ParamConfigurationDialog import ParamConfigurationDialog
@@ -255,7 +257,13 @@ class _CommandConfigFormMediator:
         dialog.grab_set()
 
     def _on_info_command(self) -> None:
-        webbrowser.open(self._command_config.command.url)
+        if "DOCKER_BROWSER_FIFO" in os.environ:
+            fifo = os.environ["DOCKER_BROWSER_FIFO"]
+            with open(fifo, "a") as fifo_file:
+                fifo_file.write(self._command_config.command.url + "\n")
+                fifo_file.flush()
+        else:
+            webbrowser.open(self._command_config.command.url)
 
     def _update_position(self):
         self._update_arrows()
