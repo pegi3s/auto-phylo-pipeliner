@@ -1,7 +1,12 @@
 #!/bin/bash
 
 SCRIPT_PATH="$(dirname -- "${BASH_SOURCE[0]}")"
-VERSION=$(cat "$SCRIPT_PATH/../setup.cfg" | grep version | cut -d'=' -f2 | sed -e 's/ //g')
+if [[ -f "$SCRIPT_PATH/../setup.cfg" ]]; then
+  VERSION=$(cat "$SCRIPT_PATH/../setup.cfg" | grep version | cut -d'=' -f2 | sed -e 's/ //g')
+else
+  VERSION=latest
+fi
+
 
 FIFOPATH=$(mktemp -u)
 mkfifo -m 600 "$FIFOPATH"
