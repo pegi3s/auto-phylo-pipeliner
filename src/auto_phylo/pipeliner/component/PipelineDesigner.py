@@ -114,8 +114,9 @@ class _CommandConfigFormMediator:
         self._btn_up = Button(master, text="↑", width=2)
         self._btn_down = Button(master, text="↓", width=2)
 
+        command_names = commands.list_names()
         self._sv_om_commands = StringVar(master)
-        self._om_commands = OptionMenu(master, self._sv_om_commands, *commands.list_names())
+        self._om_commands = OptionMenu(master, self._sv_om_commands, command_names[0], *command_names)
         self._om_commands.configure(width=25)
 
         self._e_input = Entry(master, width=10)
