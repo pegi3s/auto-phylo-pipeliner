@@ -18,7 +18,7 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
         self._input_dir: Optional[str] = input_dir
         self._output_dir: Optional[str] = output_dir
         self._special: Optional[int] = special
-        self._param_values: Dict[str, str] = {} if param_values is None else param_values.copy()
+        self._param_values: Dict[str, str] = command.params if param_values is None else param_values.copy()
 
     @property
     def command(self) -> Command:

@@ -153,7 +153,7 @@ class PipelineConfiguration(Observable):
 
         if event.action == PipelineChangeType.ADD or event.action == PipelineChangeType.INSERT:
             command = pipeline.commands[index]
-            new_config = CommandConfiguration(command, param_values=command.params)
+            new_config = CommandConfiguration(command)
 
             self._command_configs.insert(index, new_config)
             new_config.add_callback(self._on_command_config_change)
