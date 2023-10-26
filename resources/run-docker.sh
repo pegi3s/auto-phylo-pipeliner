@@ -26,6 +26,7 @@ function close_xdg {
 }
 trap close_xdg EXIT
 
+docker pull pegi3s/auto-phylo-pipeliner:$VERSION
 
 docker run --rm -ti --user $(id -u):$(id -g) \
   -e DISPLAY=$DISPLAY \
