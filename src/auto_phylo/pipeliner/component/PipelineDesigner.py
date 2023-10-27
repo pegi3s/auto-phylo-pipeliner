@@ -1,7 +1,8 @@
 import webbrowser
 from tkinter import Widget, StringVar, Event, BooleanVar
 from tkinter.constants import NORMAL, DISABLED
-from tkinter.ttk import Frame, OptionMenu, Entry, Spinbox, Button, Checkbutton
+from tkinter.font import Font
+from tkinter.ttk import Frame, OptionMenu, Entry, Spinbox, Button, Checkbutton, Style, Label
 from typing import Optional, Dict, Any, List, Final, Tuple
 import os
 import sys
@@ -65,7 +66,7 @@ class PipelineDesigner(Frame):
             self._mediators.append(_CommandConfigFormMediator(self, index, self._pipeline_configuration, self._commands,
                                                               padx=PipelineDesigner._PAD_X,
                                                               pady=PipelineDesigner._PAD_Y))
-        self._btn_new.grid(row=len(self._mediators), column=0, columnspan=10, padx=PipelineDesigner._PAD_X,
+        self._btn_new.grid(row=len(self._mediators), column=0, columnspan=13, padx=PipelineDesigner._PAD_X,
                            pady=PipelineDesigner._PAD_Y)
 
     def _change_children_state(self, state: str) -> None:
@@ -99,6 +100,9 @@ class PipelineDesigner(Frame):
 
 
 class _CommandConfigFormMediator:
+    _COLOR_ERROR: Final[str] = "#ff4444"
+    _STYLE_ERROR_LABEL: Final[str] = "PipelineDesigner_CommandConfigFormMediator_Error.TLabel"
+
     def __init__(self, master: Frame,
                  index: int,
                  pipeline_configuration: PipelineConfiguration,
@@ -119,8 +123,20 @@ class _CommandConfigFormMediator:
         self._om_commands = OptionMenu(master, self._sv_om_commands, command_names[0], *command_names)
         self._om_commands.configure(width=25)
 
+        style = Style()
+        style.configure(_CommandConfigFormMediator._STYLE_ERROR_LABEL,
+                        foreground=_CommandConfigFormMediator._COLOR_ERROR,
+                        font=Font(family="TkFixedFont", weight="bold"))
+
+        self._sv_lbl_input = StringVar()
         self._e_input = Entry(master, width=10)
+        self._lbl_input = Label(master, textvariable=self._sv_lbl_input)
+        self._lbl_input.configure(style=_CommandConfigFormMediator._STYLE_ERROR_LABEL)
+
+        self._sv_lbl_output = StringVar()
         self._e_output = Entry(master, width=10)
+        self._lbl_output = Label(master, textvariable=self._sv_lbl_output)
+        self._lbl_output.configure(style=_CommandConfigFormMediator._STYLE_ERROR_LABEL)
 
         self._bv_chk_special = BooleanVar(master)
         self._chk_special = Checkbutton(master, text="Special", variable=self._bv_chk_special)
@@ -130,11 +146,16 @@ class _CommandConfigFormMediator:
         self._btn_info = Button(master, text="Info")
         self._btn_remove = Button(master, text="X", width=2)
 
+        self._sv_lbl_params = StringVar()
+        self._lbl_params = Label(master, textvariable=self._sv_lbl_params)
+        self._lbl_params.configure(style=_CommandConfigFormMediator._STYLE_ERROR_LABEL)
+
         self._update_position()
         self._update_command()
         self._update_input_dir()
         self._update_output_dir()
         self._update_special()
+        self._update_params()
 
         self._e_input.bind("<FocusOut>", self._on_input_change)
         self._e_output.bind("<FocusOut>", self._on_output_change)
@@ -154,26 +175,39 @@ class _CommandConfigFormMediator:
         self._pipeline_configuration.pipeline.add_callback(self._on_pipeline_change)
 
     def _locate_components(self) -> None:
+        lbl_kwargs = self._grid_kwargs.copy()
+        pre_lbl_kwargs = self._grid_kwargs.copy()
+
+        if "padx" in self._grid_kwargs:
+            pre_lbl_kwargs["padx"] = (pre_lbl_kwargs["padx"][0], 0)
+            lbl_kwargs["padx"] = (0, 0)
+
         self._btn_up.grid(row=self._index, column=0, **self._grid_kwargs)
         self._btn_down.grid(row=self._index, column=1, sticky="nsew", **self._grid_kwargs)
         self._om_commands.grid(row=self._index, column=2, sticky="nsew", **self._grid_kwargs)
-        self._e_input.grid(row=self._index, column=3, sticky="nsew", **self._grid_kwargs)
-        self._e_output.grid(row=self._index, column=4, sticky="nsew", **self._grid_kwargs)
-        self._chk_special.grid(row=self._index, column=5, sticky="nsew", **self._grid_kwargs)
-        self._sb_special.grid(row=self._index, column=6, sticky="nsew", **self._grid_kwargs)
-        self._btn_params.grid(row=self._index, column=7, sticky="nsew", **self._grid_kwargs)
-        self._btn_info.grid(row=self._index, column=8, sticky="nsew", **self._grid_kwargs)
-        self._btn_remove.grid(row=self._index, column=9, **self._grid_kwargs)
+        self._e_input.grid(row=self._index, column=3, sticky="nsew", **pre_lbl_kwargs)
+        self._lbl_input.grid(row=self._index, column=4, sticky="nsew", **lbl_kwargs)
+        self._e_output.grid(row=self._index, column=5, sticky="nsew", **pre_lbl_kwargs)
+        self._lbl_output.grid(row=self._index, column=6, sticky="nsew", **lbl_kwargs)
+        self._chk_special.grid(row=self._index, column=7, sticky="nsew", **self._grid_kwargs)
+        self._sb_special.grid(row=self._index, column=8, sticky="nsew", **self._grid_kwargs)
+        self._btn_params.grid(row=self._index, column=9, sticky="nsew", **pre_lbl_kwargs)
+        self._lbl_params.grid(row=self._index, column=10, sticky="nsew", **lbl_kwargs)
+        self._btn_info.grid(row=self._index, column=11, sticky="nsew", **self._grid_kwargs)
+        self._btn_remove.grid(row=self._index, column=12, **self._grid_kwargs)
 
     def destroy(self) -> None:
         self._btn_up.destroy()
         self._btn_down.destroy()
         self._om_commands.destroy()
         self._e_input.destroy()
+        self._lbl_input.destroy()
         self._e_output.destroy()
+        self._lbl_output.destroy()
         self._chk_special.destroy()
         self._sb_special.destroy()
         self._btn_params.destroy()
+        self._lbl_params.destroy()
         self._btn_info.destroy()
         self._btn_remove.destroy()
 
@@ -195,6 +229,8 @@ class _CommandConfigFormMediator:
             self._update_output_dir()
         elif event.attribute == CommandConfiguration.special.fget.__name__:  # type: ignore
             self._update_special()
+        elif event.attribute.startswith("param_values"):
+            self._update_params()
 
     def _on_pipeline_change(self, _: Pipeline, event: PipelineChangeEvent) -> None:
         if event.action == PipelineChangeType.ADD or event.action == PipelineChangeType.INSERT:
@@ -227,10 +263,22 @@ class _CommandConfigFormMediator:
             self._pipeline_configuration.replace_command_configuration(self._index, new_configuration)
 
     def _on_input_change(self, event: Event) -> None:
-        self._command_config.input_dir = event.widget.get()
+        new_dir = event.widget.get().strip()
+        self._command_config.input_dir = new_dir
+
+        if len(new_dir) == 0:
+            self._sv_lbl_input.set("!")
+        else:
+            self._sv_lbl_input.set("")
 
     def _on_output_change(self, event: Event) -> None:
-        self._command_config.output_dir = event.widget.get()
+        new_dir = event.widget.get().strip()
+        self._command_config.output_dir = new_dir
+
+        if len(new_dir) == 0:
+            self._sv_lbl_output.set("!")
+        else:
+            self._sv_lbl_output.set("")
 
     def _on_special_activation_change(self) -> None:
         if self._bv_chk_special.get():
@@ -304,11 +352,17 @@ class _CommandConfigFormMediator:
         self._e_input.delete(0, len(self._e_input.get()))
         if self._command_config.has_input_dir():
             self._e_input.insert(0, self._command_config.input_dir)  # type: ignore
+            self._sv_lbl_input.set(" ")
+        else:
+            self._sv_lbl_input.set("!")
 
     def _update_output_dir(self) -> None:
         self._e_output.delete(0, len(self._e_output.get()))
         if self._command_config.has_output_dir():
             self._e_output.insert(0, self._command_config.output_dir)  # type: ignore
+            self._sv_lbl_output.set(" ")
+        else:
+            self._sv_lbl_output.set("!")
 
     def _update_special(self) -> None:
         if not self._command_config.is_special_supported():
@@ -322,3 +376,9 @@ class _CommandConfigFormMediator:
             else:
                 self._bv_chk_special.set(False)
                 self._sb_special.config(state=DISABLED)  # type: ignore
+
+    def _update_params(self) -> None:
+        if self._command_config.is_valid_config():
+            self._sv_lbl_params.set(" ")
+        else:
+            self._sv_lbl_params.set("!")

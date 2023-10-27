@@ -18,7 +18,14 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
         self._input_dir: Optional[str] = input_dir
         self._output_dir: Optional[str] = output_dir
         self._special: Optional[int] = special
-        self._param_values: Dict[str, str] = command.params if param_values is None else param_values.copy()
+        self._param_values: Dict[str, str]
+
+        if param_values is None:
+            self._param_values = command.params
+        else:
+            self._param_values = {}
+
+            self._replace_param_values(param_values)
 
     @property
     def command(self) -> Command:
@@ -90,9 +97,13 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
 
             self._notify_observers(CommandConfigurationEvent("special", old_value, self._special))
 
-    def is_valid(self):
+    def is_valid_pipeline(self) -> bool:
         return self._input_dir is not None \
             and self._output_dir is not None
+
+    def is_valid_config(self) -> bool:
+        return all(self.has_param_value(param) or self.command.does_param_allow_empty(param)
+                    for param in self.command.params)
 
     def is_special_supported(self) -> bool:
         return self._command.supports_special
@@ -113,11 +124,14 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
     def has_param(self, param: str) -> bool:
         return self._command.has_param(param)
 
-    def list_param(self) -> List[str]:
-        return self._command.list_params()
+    def list_param_names(self) -> List[str]:
+        return self._command.list_param_names()
 
     def has_param_value(self, param: str) -> bool:
-        return param in self._param_values
+        return self._param_values[param] != ""
+
+    def has_valid_param_value(self, param: str) -> bool:
+        return self._param_values[param] != "" or self._command.does_param_allow_empty(param)
 
     def get_param_value(self, param: str) -> str:
         return self._param_values[param]
@@ -126,6 +140,7 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
         if not self._command.has_param(param):
             raise ValueError(f"{param} is not a valid param")
 
+        new_value = new_value.strip()
         if param not in self._param_values or self._param_values[param] != new_value:
             old_value = self._param_values[param] if param in self._param_values else None
 
@@ -142,14 +157,14 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
 
         old_value = self._param_values[param]
 
-        del self._param_values[param]
+        self._param_values[param] = ""
 
-        self._notify_observers(CommandConfigurationEvent(f"param_values[{param}]", old_value, None))
+        self._notify_observers(CommandConfigurationEvent(f"param_values[{param}]", old_value, ""))
 
     def set_param_values(self, params: Dict[str, str]) -> None:
         old_value = self._param_values
 
-        self._param_values = params.copy()
+        self._replace_param_values(params)
 
         self._notify_observers(CommandConfigurationEvent(f"param_values", old_value, params))
 
@@ -172,6 +187,19 @@ class CommandConfiguration(Observable[CommandConfigurationEvent]):
 
         if command_config.command.tool == self._command.tool:
             command_config.set_param_values(self._param_values)
+
+    def _replace_param_values(self, param_values: Dict[str, str]) -> None:
+        param_names = self._command.list_param_names()
+        for param, value in param_values.items():
+            if param not in param_names:
+                raise ValueError(f"Param {param} does not belong to the command {self._command.name}")
+
+        self._param_values.clear()
+        self._param_values = param_values.copy()
+
+        for param in param_names:
+            if param not in self._param_values:
+                self._param_values[param] = ""
 
     def __copy__(self) -> "CommandConfiguration":
         return CommandConfiguration(

@@ -8,7 +8,7 @@ class CommandConfigurationEvent:
         self._new_value: Any = new_value
 
     @property
-    def attribute(self) -> Any:
+    def attribute(self) -> str:
         return self._attribute
 
     @property

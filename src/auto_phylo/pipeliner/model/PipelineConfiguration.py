@@ -86,13 +86,17 @@ class PipelineConfiguration(Observable):
     def command_configs(self) -> List[CommandConfiguration]:
         return self._command_configs.copy()
 
-    def is_valid(self) -> bool:
+    def is_valid_pipeline(self) -> bool:
+        return self._output_dir is not None \
+            and self._pipeline.is_valid() \
+            and all(command_config.is_valid_pipeline() for command_config in self._command_configs)
+
+    def is_valid_config(self) -> bool:
         return self._seda_version is not None \
             and self._output_dir is not None \
-            and self._pipeline.is_valid() \
-            and all(command_config.is_valid() for command_config in self._command_configs)
+            and all(command_config.is_valid_config() for command_config in self._command_configs)
 
-    def set_command_parameter(self, command: Union[Command, str], param: str, new_value: str) -> None:
+    def set_command_param_value(self, command: Union[Command, str], param: str, new_value: str) -> None:
         tool = command if isinstance(command, str) else command.tool
 
         found = False
@@ -105,7 +109,7 @@ class PipelineConfiguration(Observable):
         if not found:
             raise ValueError(f"Unknown command {tool}")
 
-    def get_command_parameter(self, command: Union[Command, str], param: str) -> str:
+    def get_command_param_value(self, command: Union[Command, str], param: str) -> str:
         tool = command if isinstance(command, str) else command.tool
 
         for command_config in self._command_configs:
@@ -114,12 +118,21 @@ class PipelineConfiguration(Observable):
 
         raise ValueError(f"Unknown command {tool}")
 
-    def get_command_parameters(self, command: Union[Command, str]) -> Dict[str, str]:
+    def get_command_param_values(self, command: Union[Command, str]) -> Dict[str, str]:
         tool = command if isinstance(command, str) else command.tool
 
         for command_config in self._command_configs:
             if command_config.command.tool == tool:
                 return command_config.param_values
+
+        raise ValueError(f"Unknown command {tool}")
+
+    def list_command_param_names(self, command: Command) -> List[str]:
+        tool = command if isinstance(command, str) else command.tool
+
+        for command_config in self._command_configs:
+            if command_config.command.tool == tool:
+                return command_config.list_param_names()
 
         raise ValueError(f"Unknown command {tool}")
 

@@ -38,7 +38,7 @@ class Command:
     def has_params(self) -> bool:
         return len(self._params) > 0
 
-    def list_params(self) -> List[str]:
+    def list_param_names(self) -> List[str]:
         return list(self._params.keys())
 
     def get_default_param_value(self, param: str) -> str:

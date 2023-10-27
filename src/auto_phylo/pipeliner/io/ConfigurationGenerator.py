@@ -15,13 +15,13 @@ dir={pipeline.output_dir}
 """
 
         for command in pipeline.pipeline:
-            param_values: Dict[str, str] = pipeline.get_command_parameters(command)
+            param_values: Dict[str, str] = pipeline.get_command_param_values(command)
 
             if len(param_values) > 0:
                 output += f"# {command.tool}\n"
 
-                for key, value in param_values.items():
-                    output += f"{key}={value}\n"
+                for param in pipeline.list_command_param_names(command):
+                    output += f"{param}={param_values[param]}\n"
 
                 output += "\n"
 

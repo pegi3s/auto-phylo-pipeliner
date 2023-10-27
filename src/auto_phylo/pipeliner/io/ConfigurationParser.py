@@ -43,7 +43,7 @@ class ConfigurationParser:
                 else:
                     try:
                         command = pipeline_configuration.pipeline.find_command_with_param(param)
-                        pipeline_configuration.set_command_parameter(command, param, value)
+                        pipeline_configuration.set_command_param_value(command, param, value)
                     except ValueError:
                         errors[line_number] = f"Pipeline configuration has no command for param {param}"
 

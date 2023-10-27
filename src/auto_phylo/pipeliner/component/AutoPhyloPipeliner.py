@@ -38,6 +38,8 @@ def _directory_has_pipeline_files(directory: str) -> bool:
 
 
 class AutoPhyloPipeliner(Tk):
+    _COLOR_ERROR: Final[str] = "#ffcccc"
+
     def __init__(self,
                  pipeline_configuration: Optional[PipelineConfiguration] = None,
                  commands: Commands = load_commands(),
@@ -96,13 +98,9 @@ class AutoPhyloPipeliner(Tk):
         if self._pipeline_configuration is None:
             raise RuntimeError("pipeline_config should now be None")
 
-        if self._pipeline_configuration.is_valid():
-            self._status_bar.set_ok("Pipeline is valid")
-        else:
-            self._status_bar.set_warning("Pipeline is not valid")
-
         self._update_texts()
         self._update_files()
+        self._update_pipeline_status()
 
     def _on_auto_phylo_version_change(self, auto_phylo_version: str) -> None:
         if self._auto_phylo_version != auto_phylo_version:
@@ -198,6 +196,7 @@ class AutoPhyloPipeliner(Tk):
         self._update_components()
         self._update_texts()
         self._update_files()
+        self._update_pipeline_status()
 
         self._pipeline_configuration.add_callback(self._on_pipeline_config_change)
 
@@ -238,15 +237,22 @@ class AutoPhyloPipeliner(Tk):
         self._text_pipeline.delete("1.0", END)
         self._text_config.delete("1.0", END)
 
-        if self._pipeline_configuration.is_valid():
-            pipeline_text = self._pipeline_generator.generate(self._pipeline_configuration)
-            config_text = self._configuration_generator.generate(self._pipeline_configuration)
+        if self._pipeline_configuration.is_valid_pipeline():
+            self._text_pipeline["bg"] = "#ffffff"
 
+            pipeline_text = self._pipeline_generator.generate(self._pipeline_configuration)
             self._text_pipeline.insert(INSERT, pipeline_text)
-            self._text_config.insert(INSERT, config_text)
         else:
+            self._text_pipeline["bg"] = AutoPhyloPipeliner._COLOR_ERROR
             self._text_pipeline.insert(INSERT, "Pipeline is not valid")
-            self._text_config.insert(INSERT, "Pipeline is not valid")
+
+        if self._pipeline_configuration.is_valid_config():
+            self._text_config["bg"] = "#ffffff"
+        else:
+            self._text_config["bg"] = AutoPhyloPipeliner._COLOR_ERROR
+
+        config_text = self._configuration_generator.generate(self._pipeline_configuration)
+        self._text_config.insert(INSERT, config_text)
 
         self._text_pipeline.configure(state=DISABLED)
         self._text_config.configure(state=DISABLED)
@@ -255,7 +261,7 @@ class AutoPhyloPipeliner(Tk):
         if self._pipeline_configuration is None:
             return
 
-        if self._pipeline_configuration.is_valid():
+        if self._pipeline_configuration.is_valid_pipeline():
             if self._pipeline_configuration.output_dir is None:
                 raise ValueError("pipeline_configuration.output_dir should not be None")
 
@@ -289,6 +295,20 @@ class AutoPhyloPipeliner(Tk):
         current_permissions = run_file_path.stat().st_mode
         new_permissions = current_permissions | stat.S_IXUSR
         run_file_path.chmod(new_permissions)
+
+    def _update_pipeline_status(self):
+        if self._pipeline_configuration is not None:
+            valid_pipeline = self._pipeline_configuration.is_valid_pipeline()
+            valid_config = self._pipeline_configuration.is_valid_config()
+
+            if valid_pipeline and valid_config:
+                self._status_bar.set_ok("Pipeline and configuration are valid")
+            elif not valid_pipeline and not valid_config:
+                self._status_bar.set_error("Pipeline and configuration are incomplete")
+            elif not valid_pipeline:
+                self._status_bar.set_warning("Pipeline is incomplete")
+            elif not valid_config:  # Yes, you don't really have to check this
+                self._status_bar.set_warning("Configuration is incomplete")
 
 
 class _Toolbar(Frame):
@@ -442,21 +462,28 @@ class _DesignerFrame(Frame):
 
 
 class _StatusBar(Frame):
-    _COLOR_WARNING: Final[str] = "#ffaaaa"
     _COLOR_OK: Final[str] = "#aaffaa"
-    _STYLE_WARNING_FRAME: Final[str] = "Warning.TFrame"
-    _STYLE_OK_FRAME: Final[str] = "#Ok.TFrame"
-    _STYLE_WARNING_LABEL: Final[str] = "Warning.TLabel"
-    _STYLE_OK_LABEL: Final[str] = "#Ok.TLabel"
+    _STYLE_OK_FRAME: Final[str] = "AutoPhyloPipeliner_StatusBar_Ok.TFrame"
+    _STYLE_OK_LABEL: Final[str] = "AutoPhyloPipeliner_StatusBar_Ok.TLabel"
+
+    _COLOR_WARNING: Final[str] = "#ffccaa"
+    _STYLE_WARNING_FRAME: Final[str] = "AutoPhyloPipeliner_StatusBar_Warning.TFrame"
+    _STYLE_WARNING_LABEL: Final[str] = "AutoPhyloPipeliner_StatusBar_Warning.TLabel"
+
+    _COLOR_ERROR: Final[str] = "#ffaaaa"
+    _STYLE_ERROR_FRAME: Final[str] = "AutoPhyloPipeliner_StatusBar_Error.TFrame"
+    _STYLE_ERROR_LABEL: Final[str] = "AutoPhyloPipeliner_StatusBar_Error.TLabel"
 
     def __init__(self, initial_message: str = "", master: Optional[Misc] = None, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
         self._style: Style = Style()
-        self._style.configure(_StatusBar._STYLE_WARNING_FRAME, background=_StatusBar._COLOR_WARNING)
         self._style.configure(_StatusBar._STYLE_OK_FRAME, background=_StatusBar._COLOR_OK)
-        self._style.configure(_StatusBar._STYLE_WARNING_LABEL, background=_StatusBar._COLOR_WARNING)
         self._style.configure(_StatusBar._STYLE_OK_LABEL, background=_StatusBar._COLOR_OK)
+        self._style.configure(_StatusBar._STYLE_WARNING_FRAME, background=_StatusBar._COLOR_WARNING)
+        self._style.configure(_StatusBar._STYLE_WARNING_LABEL, background=_StatusBar._COLOR_WARNING)
+        self._style.configure(_StatusBar._STYLE_ERROR_FRAME, background=_StatusBar._COLOR_ERROR)
+        self._style.configure(_StatusBar._STYLE_ERROR_LABEL, background=_StatusBar._COLOR_ERROR)
 
         self._sb_lbl_status: StringVar = StringVar()
         self._sb_lbl_status.set(initial_message)
@@ -478,6 +505,11 @@ class _StatusBar(Frame):
         self._sb_lbl_status.set(message)
         self.configure(style=_StatusBar._STYLE_WARNING_FRAME)
         self._lbl_status.configure(style=_StatusBar._STYLE_WARNING_LABEL)
+
+    def set_error(self, message: str) -> None:
+        self._sb_lbl_status.set(message)
+        self.configure(style=_StatusBar._STYLE_ERROR_FRAME)
+        self._lbl_status.configure(style=_StatusBar._STYLE_ERROR_LABEL)
 
     def set_ok(self, message: str) -> None:
         self._sb_lbl_status.set(message)

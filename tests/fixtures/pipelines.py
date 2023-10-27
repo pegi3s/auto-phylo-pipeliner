@@ -88,6 +88,7 @@ def basic_config_file(context: Context) -> str:
 
         # Other parameters
         # tblastx
+        tblastx_query=
         tblastx_expect=0.01
     """
 
@@ -278,6 +279,7 @@ def advanced_config_file(context: Context) -> str:
 
         # Other parameters
         # tblastx
+        tblastx_query=
         tblastx_expect=0.1
 
         # add_taxonomy
@@ -291,6 +293,10 @@ def advanced_config_file(context: Context) -> str:
         cgf_cga_codon_table=1
         cgf_cga_isoform_min_word_length=
         cgf_cga_isoform_ref_size=
+
+        # check_contamination
+        check_cont_taxonomy=
+        check_cont_category=
     """
 
     context.config_text = config_text
