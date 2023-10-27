@@ -358,9 +358,9 @@
     }
   },
   {
-    "tool": "tree_collapser",
-    "name": "tree_collapser (S) (Newick-Newick)",
-    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#tree-collapser",
+    "tool": "tree_collapse",
+    "name": "tree_collapse (S) (Newick-Newick)",
+    "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#tree-collapse",
     "supports_special": false,
     "params": {
       "tc_taxonomy": {
