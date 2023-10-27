@@ -5,8 +5,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_1_blast.html#blastn",
     "supports_special": true,
     "params": {
-      "blastn_query": "",
-      "blastn_expect": "0.05"
+      "blastn_query": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "blastn_expect": {
+        "default_value": "0.05",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -15,8 +21,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_1_blast.html#tblastn",
     "supports_special": true,
     "params": {
-      "tblastn_query": "",
-      "tblastn_expect": "0.05"
+      "tblastn_query": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "tblastn_expect": {
+        "default_value": "0.05",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -25,8 +37,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_1_blast.html#tblastx",
     "supports_special": true,
     "params": {
-      "tblastx_query": "",
-      "tblastx_expect": "0.05"
+      "tblastx_query": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "tblastx_expect": {
+        "default_value": "0.05",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -35,7 +53,10 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#add_refs",
     "supports_special": false,
     "params": {
-      "(add_refs_reference": ""
+      "(add_refs_reference": {
+        "default_value": "",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -44,7 +65,10 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#add-taxonomy",
     "supports_special": true,
     "params": {
-      "add_tax_taxonomy_header": ""
+      "add_tax_taxonomy_header": {
+        "default_value": "",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -53,13 +77,34 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#cgf-and-cga-cds-processing",
     "supports_special": true,
     "params": {
-      "cgf_cga_start_codon": "ATG",
-      "cgf_cga_max_size_difference": "10",
-      "cgf_cga_reference_file": "",
-      "cgf_cga_pattern": "\".\"",
-      "cgf_cga_codon_table": "1",
-      "cgf_cga_isoform_min_word_length": "",
-      "cgf_cga_isoform_ref_size": ""
+      "cgf_cga_start_codon": {
+        "default_value": "ATG",
+        "allows_empty": false
+      },
+      "cgf_cga_max_size_difference": {
+        "default_value": "10",
+        "allows_empty": false
+      },
+      "cgf_cga_reference_file": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "cgf_cga_pattern": {
+        "default_value": "\".\"",
+        "allows_empty": false
+      },
+      "cgf_cga_codon_table": {
+        "default_value": "1",
+        "allows_empty": false
+      },
+      "cgf_cga_isoform_min_word_length": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "cgf_cga_isoform_ref_size": {
+        "default_value": "",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -68,8 +113,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#check-contamination",
     "supports_special": true,
     "params": {
-      "check_cont_taxonomy": "",
-      "check_cont_category": ""
+      "check_cont_taxonomy": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "check_cont_category": {
+        "default_value": "",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -141,8 +192,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#get_phylo_taxa",
     "supports_special": false,
     "params": {
-      "get_phylo_taxa_name1": "",
-      "get_phylo_taxa_name2": ""
+      "get_phylo_taxa_name1": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "get_phylo_taxa_name2": {
+        "default_value": "",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -158,8 +215,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#Fastroot",
     "supports_special": false,
     "params": {
-      "fastroot_rooting_method": "MP",
-      "fastroot_outgroup": ""
+      "fastroot_rooting_method": {
+        "default_value": "MP",
+        "allows_empty": false
+      },
+      "fastroot_outgroup": {
+        "default_value": "",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -182,8 +245,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#me-tree",
     "supports_special": false,
     "params": {
-      "me_tree_bootstrap": "500",
-      "me_tree_treatment": "\"Complete Deletion\""
+      "me_tree_bootstrap": {
+        "default_value": "500",
+        "allows_empty": false
+      },
+      "me_tree_treatment": {
+        "default_value": "\"Complete Deletion\"",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -192,8 +261,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#ml-tree",
     "supports_special": false,
     "params": {
-      "ml_tree_bootstrap": "500",
-      "ml_tree_treatment": "\"Complete Deletion\""
+      "ml_tree_bootstrap": {
+        "default_value": "500",
+        "allows_empty": false
+      },
+      "ml_tree_treatment": {
+        "default_value": "\"Complete Deletion\"",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -202,8 +277,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#mp-tree",
     "supports_special": false,
     "params": {
-      "mp_tree_bootstrap": "500",
-      "mp_tree_treatment": "\"Complete Deletion\""
+      "mp_tree_bootstrap": {
+        "default_value": "500",
+        "allows_empty": false
+      },
+      "mp_tree_treatment": {
+        "default_value": "\"Complete Deletion\"",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -212,8 +293,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#mrbayes",
     "supports_special": false,
     "params": {
-      "mb_ngen": "1000000",
-      "mb_burnin": "2500"
+      "mb_ngen": {
+        "default_value": "1000000",
+        "allows_empty": false
+      },
+      "mb_burnin": {
+        "default_value": "2500",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -222,8 +309,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#nj-tree",
     "supports_special": false,
     "params": {
-      "nj_tree_bootstrap": "500",
-      "nj_tree_treatment": "\"Complete Deletion\""
+      "nj_tree_bootstrap": {
+        "default_value": "500",
+        "allows_empty": false
+      },
+      "nj_tree_treatment": {
+        "default_value": "\"Complete Deletion\"",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -246,7 +339,10 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_3_alignment.html#Probcons_refinement",
     "supports_special": false,
     "params": {
-      "probcons_refin_iterations": "100"
+      "probcons_refin_iterations": {
+        "default_value": "100",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -255,7 +351,10 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#rootdigger",
     "supports_special": false,
     "params": {
-      "rootdigger_mode": "exhaustive"
+      "rootdigger_mode": {
+        "default_value": "exhaustive",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -264,8 +363,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#tree-collapser",
     "supports_special": false,
     "params": {
-      "tc_taxonomy": "",
-      "tc_stsm": ""
+      "tc_taxonomy": {
+        "default_value": "",
+        "allows_empty": true
+      },
+      "tc_stsm": {
+        "default_value": "",
+        "allows_empty": true
+      }
     }
   },
   {
@@ -274,8 +379,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_4_tree_building.html#upgma-tree",
     "supports_special": false,
     "params": {
-      "upgma_tree_bootstrap": "500",
-      "upgma_tree_treatment": "\"Complete Deletion\""
+      "upgma_tree_bootstrap": {
+        "default_value": "500",
+        "allows_empty": false
+      },
+      "upgma_tree_treatment": {
+        "default_value": "\"Complete Deletion\"",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -291,19 +402,58 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_6_gene_annotation.html#cga",
     "supports_special": false,
     "params": {
-      "cga_expect1": "0.05",
-      "cga_reference1": "",
-      "cga_hit_region_window1": "10000",
-      "cga_expect2": "0.05",
-      "cga_reference2": "",
-      "cga_hit_region_window2": "10000",
-      "cga_min_overlap": "2000",
-      "cga_reference3": "",
-      "cga_max_dist": "18000",
-      "cga_intron_bp": "500",
-      "cga_min_full_nucleotide_size": "500",
-      "cga_selection_criterion": "criterion_3",
-      "cga_selection_correction": "20"
+      "cga_expect1": {
+        "default_value": "0.05",
+        "allows_empty": false
+      },
+      "cga_reference1": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "cga_hit_region_window1": {
+        "default_value": "10000",
+        "allows_empty": false
+      },
+      "cga_expect2": {
+        "default_value": "0.05",
+        "allows_empty": false
+      },
+      "cga_reference2": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "cga_hit_region_window2": {
+        "default_value": "10000",
+        "allows_empty": false
+      },
+      "cga_min_overlap": {
+        "default_value": "2000",
+        "allows_empty": false
+      },
+      "cga_reference3": {
+        "default_value": "",
+        "allows_empty": false
+      },
+      "cga_max_dist": {
+        "default_value": "18000",
+        "allows_empty": false
+      },
+      "cga_intron_bp": {
+        "default_value": "500",
+        "allows_empty": false
+      },
+      "cga_min_full_nucleotide_size": {
+        "default_value": "500",
+        "allows_empty": false
+      },
+      "cga_selection_criterion": {
+        "default_value": "criterion_3",
+        "allows_empty": false
+      },
+      "cga_selection_correction": {
+        "default_value": "20",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -312,20 +462,62 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_7_pss_detection.html#ipssa",
     "supports_special": false,
     "params": {
-      "ipssa_sequence_limit": "90",
-      "ipssa_random_seed": "12345",
-      "ipssa_align_method": "muscle",
-      "ipssa_tcoffee_min_score": "3",
-      "ipssa_mrbayes_generations": "1000000",
-      "ipssa_mrbayes_burnin": "2500",
-      "ipssa_fubar_sequence_limit": "90",
-      "ipssa_fubar_runs": "1",
-      "ipssa_codeml_sequence_limit": "30",
-      "ipssa_codeml_runs": "30",
-      "ipssa_codeml_models": "\"1 2 7 8\"",
-      "ipssa_omegamap_sequence_limit": "90",
-      "ipssa_omegamap_iterations": "2500",
-      "ipssa_omegamap_runs": "2500"
+      "ipssa_sequence_limit": {
+        "default_value": "90",
+        "allows_empty": false
+      },
+      "ipssa_random_seed": {
+        "default_value": "12345",
+        "allows_empty": false
+      },
+      "ipssa_align_method": {
+        "default_value": "muscle",
+        "allows_empty": false
+      },
+      "ipssa_tcoffee_min_score": {
+        "default_value": "3",
+        "allows_empty": false
+      },
+      "ipssa_mrbayes_generations": {
+        "default_value": "1000000",
+        "allows_empty": false
+      },
+      "ipssa_mrbayes_burnin": {
+        "default_value": "2500",
+        "allows_empty": false
+      },
+      "ipssa_fubar_sequence_limit": {
+        "default_value": "90",
+        "allows_empty": false
+      },
+      "ipssa_fubar_runs": {
+        "default_value": "1",
+        "allows_empty": false
+      },
+      "ipssa_codeml_sequence_limit": {
+        "default_value": "30",
+        "allows_empty": false
+      },
+      "ipssa_codeml_runs": {
+        "default_value": "30",
+        "allows_empty": false
+      },
+      "ipssa_codeml_models": {
+        "default_value": "\"1 2 7 8\"",
+        "allows_empty": false
+      },
+      "ipssa_omegamap_sequence_limit": {
+        "default_value": "90",
+        "allows_empty": false
+      },
+      "ipssa_omegamap_iterations": {
+        "default_value": "2500",
+        "allows_empty": false
+      },
+      "ipssa_omegamap_runs": {
+        "default_value": "2500",
+        "allows_empty": false
+      }
     }
   },
   {
@@ -334,9 +526,14 @@
     "url": "http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_8_divergence_estimates.html#kaks",
     "supports_special": false,
     "params": {
-      "kaks_model": "NG",
-      "kaks_genetic_code ": "1"
+      "kaks_model": {
+        "default_value": "NG",
+        "allows_empty": false
+      },
+      "kaks_genetic_code ": {
+        "default_value": "1",
+        "allows_empty": false
+      }
     }
   }
 ]
-

@@ -19,8 +19,14 @@ def basic_pipeline(context: Optional[Context] = None) -> PipelineConfiguration:
             url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_1_blast.html#tblastx",
             supports_special=True,
             params={
-                "tblastx_query": "",
-                "tblastx_expect": "0.05"
+                "tblastx_query": {
+                    "default_value": "",
+                    "allows_empty": False
+                },
+                "tblastx_expect": {
+                    "default_value": "0.05",
+                    "allows_empty": False
+                }
             }
         ),
         Command(
@@ -99,8 +105,14 @@ def advanced_pipeline(context: Optional[Context] = None) -> PipelineConfiguratio
             url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_1_blast.html#tblastx",
             supports_special=True,
             params={
-                "tblastx_query": "",
-                "tblastx_expect": "0.05"
+                "tblastx_query": {
+                    "default_value": "",
+                    "allows_empty": False
+                },
+                "tblastx_expect": {
+                    "default_value": "0.05",
+                    "allows_empty": False
+                }
             }
         ),
         Command(
@@ -109,7 +121,10 @@ def advanced_pipeline(context: Optional[Context] = None) -> PipelineConfiguratio
             url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#add-taxonomy",
             supports_special=True,
             params={
-                "add_tax_taxonomy_header": ""
+                "add_tax_taxonomy_header": {
+                    "default_value": "",
+                    "allows_empty": False
+                }
             }
         ),
         Command(
@@ -118,13 +133,34 @@ def advanced_pipeline(context: Optional[Context] = None) -> PipelineConfiguratio
             url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#cgf-and-cga-cds-processing",
             supports_special=True,
             params={
-                "cgf_cga_start_codon": "ATG",
-                "cgf_cga_max_size_difference": "10",
-                "cgf_cga_reference_file": "",
-                "cgf_cga_pattern": "\".\"",
-                "cgf_cga_codon_table": "1",
-                "cgf_cga_isoform_min_word_length": "",
-                "cgf_cga_isoform_ref_size": ""
+                "cgf_cga_start_codon": {
+                    "default_value": "ATG",
+                    "allows_empty": False
+                },
+                "cgf_cga_max_size_difference": {
+                    "default_value": "10",
+                    "allows_empty": False
+                },
+                "cgf_cga_reference_file": {
+                    "default_value": "",
+                    "allows_empty": False
+                },
+                "cgf_cga_pattern": {
+                    "default_value": "\".\"",
+                    "allows_empty": False
+                },
+                "cgf_cga_codon_table": {
+                    "default_value": "1",
+                    "allows_empty": False
+                },
+                "cgf_cga_isoform_min_word_length": {
+                    "default_value": "",
+                    "allows_empty": False
+                },
+                "cgf_cga_isoform_ref_size": {
+                    "default_value": "",
+                    "allows_empty": False
+                }
             }
         ),
         Command(
@@ -133,8 +169,14 @@ def advanced_pipeline(context: Optional[Context] = None) -> PipelineConfiguratio
             url="http://evolution6.i3s.up.pt/static/auto-phylo/v2/docs/modules_2_fasta_processing.html#check-contamination",
             supports_special=True,
             params={
-                "check_cont_taxonomy": "",
-                "check_cont_category": ""
+                "check_cont_taxonomy": {
+                    "default_value": "",
+                    "allows_empty": False
+                },
+                "check_cont_category": {
+                    "default_value": "",
+                    "allows_empty": False
+                }
             }
         ),
         Command(

@@ -1,14 +1,16 @@
-from copy import deepcopy
-from typing import Dict, List
+from typing import Dict, List, Union
 
 
 class Command:
-    def __init__(self, tool: str, name: str, url: str, supports_special: bool, params: Dict[str, str]):
+    def __init__(self, tool: str, name: str, url: str, supports_special: bool,
+                 params: Dict[str, Dict[str, Union[str, bool]]]):
         self._tool: str = tool
         self._name: str = name
         self._url: str = url
         self._supports_special: bool = supports_special
-        self._params: Dict[str, str] = params.copy()
+        self._params: Dict[str, str] = {param: str(value["default_value"]) for param, value in params.items()}
+        self._params_allow_empty: Dict[str, bool] = {param: bool(value["allows_empty"])
+                                                     for param, value in params.items()}
 
     @property
     def tool(self) -> str:
@@ -42,6 +44,9 @@ class Command:
     def get_default_param_value(self, param: str) -> str:
         return self._params[param]
 
+    def does_param_allow_empty(self, param: str) -> bool:
+        return self._params_allow_empty[param]
+
     def __repr__(self):
         return self.__str__()
 
@@ -50,7 +55,17 @@ class Command:
                 f"supports_special={self._supports_special}, params={self._params}]")
 
     def __copy__(self) -> "Command":
-        return Command(self._tool, self._name, self._url, self._supports_special, self._params)
+        params = self._build_params_for_constructor()
+
+        return Command(self._tool, self._name, self._url, self._supports_special, params)
 
     def __deepcopy__(self, memodict={}) -> "Command":
-        return Command(self._tool, self._name, self._url, self._supports_special, deepcopy(self._params))
+        params = self._build_params_for_constructor()
+
+        return Command(self._tool, self._name, self._url, self._supports_special, params)
+
+    def _build_params_for_constructor(self):
+        return {
+            param: {"default_value": self._params[param], "allows_empty": self._params_allow_empty[param]}
+            for param in self.params
+        }
