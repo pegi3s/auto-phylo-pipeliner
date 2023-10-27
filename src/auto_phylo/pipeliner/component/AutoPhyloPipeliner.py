@@ -191,7 +191,7 @@ class AutoPhyloPipeliner(Tk):
                 self._update_run_file()
         else:
             self._pipeline_configuration = PipelineConfiguration(Pipeline(), output_dir=directory[0],
-                                                                 seda_version="\"seda:1.6.0-v2304\"")
+                                                                 seda_version="\"seda:1.6.0-SNAPSHOT-20230920.1\"")
 
         self._update_components()
         self._update_texts()
