@@ -3,11 +3,12 @@ image: python:3.8-alpine
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   MYPYPATH: "$CI_PROJECT_DIR/src"
-  PYTHONPATH: "$CI_PROJECT_DIR/src"
 
 .install-dependencies:
   script:
     - apk add gcc libffi-dev musl-dev
+    - python -m venv /venvs/auto-phylo-pipeliner
+    - source /venvs/auto-phylo-pipeliner/bin/activate
     - pip install .[dev]
 
 stages:
