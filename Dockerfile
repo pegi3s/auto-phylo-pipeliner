@@ -1,6 +1,7 @@
 FROM python:3.8-alpine
 
-RUN apk update && apk add gcc musl-dev libffi-dev tk fontconfig ttf-dejavu
+RUN apk update && \
+    apk add gcc musl-dev libffi-dev tk fontconfig ttf-dejavu firefox ttf-liberation
 
 # Builds and installs the project
 COPY . /auto-phylo-pipeliner
