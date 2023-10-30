@@ -1,6 +1,6 @@
 [project]
 name = "auto-phylo-pipeliner"
-version = "0.1.dev33"
+version = "1.0.0"
 authors = [
   { name = "Jorge Vieira", email = "jbvieira@ibmc.up.pt" },
   { name = "Cristina Vieira", email = "cgvieira@ibmc.up.pt" },
