@@ -1,6 +1,6 @@
 [project]
 name = "auto-phylo-pipeliner"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
   { name = "Jorge Vieira", email = "jbvieira@ibmc.up.pt" },
   { name = "Cristina Vieira", email = "cgvieira@ibmc.up.pt" },
@@ -16,7 +16,7 @@ classifiers = [
   "Programming Language :: Python :: 3.8",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "Topic :: Scientific/Engineering :: Bio-Informatics"
 ]
 dependencies = ["sv-ttk==2.5.5"]
