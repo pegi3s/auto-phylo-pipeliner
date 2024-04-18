@@ -443,6 +443,9 @@ class _DesignerFrame(Frame):
     def _on_change_working_dir(self) -> None:
         selected_directory = filedialog.askdirectory(initialdir=self._pipeline_configuration.output_dir)
 
+        if selected_directory is None:
+            return
+
         if _directory_has_pipeline_files(selected_directory):
             if not askyesno("Directory conflict",
                             "The directory already contains a pipeline configuration. Do you want to overwrite it?"):
