@@ -3,12 +3,11 @@ from pathlib import Path
 from tkinter import Tk, filedialog, StringVar, Misc, Entry, Text, Event
 from tkinter.constants import BOTH, X, TOP, FLAT, LEFT, RIGHT, Y, DISABLED, NORMAL, INSERT, END
 from tkinter.messagebox import askyesno, askyesnocancel, showerror, WARNING
-from tkinter.ttk import Notebook, Frame, Label, Button, Style
-from typing import Optional, Tuple, Final
+from tkinter.ttk import Notebook, Frame, Label, Button, Style, Combobox
+from typing import Optional, Tuple, Final, List, Dict
 
 import sv_ttk
 
-from auto_phylo.pipeliner import load_commands
 from auto_phylo.pipeliner.component.ParseErrorViewerDialog import ParseErrorViewerDialog
 from auto_phylo.pipeliner.component.PipelineDesigner import PipelineDesigner
 from auto_phylo.pipeliner.io.ConfigurationGenerator import ConfigurationGenerator
@@ -41,28 +40,27 @@ class AutoPhyloPipeliner(Tk):
     _COLOR_ERROR: Final[str] = "#ffcccc"
 
     def __init__(self,
+                 commands: List[Commands],
                  pipeline_configuration: Optional[PipelineConfiguration] = None,
-                 commands: Commands = load_commands(),
-                 auto_phylo_version: str = "2.0.0",
                  *args, **kwargs):
         super().__init__(*args, *kwargs)
 
-        self._commands: Commands = commands
+        self._commands: List[Commands] = commands.copy()
+        self._selected_commands: Commands = self._commands[0]
         self._pipeline_configuration: Optional[PipelineConfiguration] = pipeline_configuration
-        self._auto_phylo_version: str = auto_phylo_version
 
         self._pipeline_generator: PipelineGenerator = PipelineGenerator()
         self._configuration_generator: ConfigurationGenerator = ConfigurationGenerator()
         self._run_file_generator: RunFileGenerator = RunFileGenerator()
 
-        self._pipeline_parser: PipelineParser = PipelineParser(self._commands)
+        self._pipeline_parser: PipelineParser = PipelineParser(self._selected_commands)
         self._configuration_parser: ConfigurationParser = ConfigurationParser()
         self._run_file_parser: RunFileParser = RunFileParser()
 
         self.title("auto-phylo-pipeliner")
         sv_ttk.use_light_theme()
 
-        self._toolbar: _Toolbar = _Toolbar(auto_phylo_version, self)
+        self._toolbar: _Toolbar = _Toolbar(self._selected_commands, self._commands, self)
         self._tab_control: Notebook = Notebook(self)
         self._status_bar: _StatusBar = _StatusBar("Welcome to auto-phylo-pipeliner")
 
@@ -91,8 +89,18 @@ class AutoPhyloPipeliner(Tk):
 
         self._toolbar.event_new_pipeline.add_callback(self._on_new_pipeline)
         self._toolbar.event_auto_phylo_version_change.add_callback(self._on_auto_phylo_version_change)
+
         if self._pipeline_configuration is not None:
             self._pipeline_configuration.add_callback(self._on_pipeline_config_change)
+
+    def _has_pipeline(self) -> bool:
+        return self._pipeline_configuration is not None
+
+    def _has_output_dir(self) -> bool:
+        return self._has_pipeline() and self._pipeline_configuration.output_dir is not None  # type: ignore
+
+    def _is_pipeline_empty(self) -> bool:
+        return self._has_pipeline() and len(self._pipeline_configuration.pipeline) == 0  # type: ignore
 
     def _on_pipeline_config_change(self, _: PipelineConfiguration, __: PipelineConfigurationChangeEvent) -> None:
         if self._pipeline_configuration is None:
@@ -102,21 +110,60 @@ class AutoPhyloPipeliner(Tk):
         self._update_files()
         self._update_pipeline_status()
 
-    def _on_auto_phylo_version_change(self, auto_phylo_version: str) -> None:
-        if self._auto_phylo_version != auto_phylo_version:
-            self._auto_phylo_version = auto_phylo_version
-            self._update_run_file()
-            self._status_bar.message = "Run file updated"
+    def _on_auto_phylo_version_change(self, new_commands: Commands) -> None:
+        def change_commands(commands: Commands) -> None:
+            self._selected_commands = commands
+            self._pipeline_parser = PipelineParser(self._selected_commands)
+            self._toolbar.auto_phylo_version = self._selected_commands.version
 
-    def _on_new_pipeline(self, directory: Tuple[str, bool]) -> None:
-        pipeline_dir, load = directory
+        if self._selected_commands != new_commands:
+            if not self._has_pipeline() or self._is_pipeline_empty():
+                change_commands(new_commands)
+            else:
+                try:
+                    new_pipeline_configuration = self._pipeline_configuration.migrate_to_commands(new_commands)  # type: ignore
 
-        if self._pipeline_configuration is not None:
-            self._pipeline_configuration.remove_callback(self._on_pipeline_config_change)
+                    change_commands(new_commands)
+                    self._change_pipeline_configuration(new_pipeline_configuration)
+                except ValueError as ve:
+                    cancel = False
+                    new_pipeline_directory = None
 
-            for main_frm in [self._frm_designer, self._frm_pipeline, self._frm_config]:
-                for child in main_frm.winfo_children():
-                    child.destroy()
+                    change_dir = askyesnocancel("Version change",
+                                              "Your pipeline is not compatible with the selected version. "
+                                              "Do you want to select a new working directory (its contents will be overwritten)?\n\n"
+                                              "(If 'No' is selected files in the current working dir will be overwritten)")
+
+                    current_output_dir = self._pipeline_configuration.output_dir  # type: ignore
+
+                    if change_dir is None:
+                        # Operation cancelled
+                        cancel = True
+                    elif change_dir:
+                        # New working dir requested
+                        selected_directory = filedialog.askdirectory(initialdir=current_output_dir)
+
+                        if not selected_directory.strip():
+                            # Directory selection cancelled
+                            cancel = True
+                        else:
+                            # New directory selected
+                            new_pipeline_directory = (selected_directory, False)
+                    else:
+                        # Current output dir will be overwritten
+                        new_pipeline_directory = (current_output_dir, False)  # type: ignore
+
+                    if cancel:
+                        self._toolbar.auto_phylo_version = self._selected_commands.version
+                    else:
+                        change_commands(new_commands)
+
+                        if new_pipeline_directory is not None:
+                            self._on_new_pipeline(new_pipeline_directory)
+
+    def _on_new_pipeline(self, directory_and_load: Tuple[str, bool]) -> None:
+        pipeline_dir, load = directory_and_load
+        create_run_file = False
 
         if load:
             directory_path = Path(pipeline_dir)
@@ -159,7 +206,6 @@ class AutoPhyloPipeliner(Tk):
                     viewer.wait_window()
                     return
 
-            create_run_file = False
             if run_file_path.is_file():
                 try:
                     with run_file_path.open("r") as run_file_file:
@@ -184,14 +230,24 @@ class AutoPhyloPipeliner(Tk):
                             "(If 'No' is selected pipeline loading will be cancelled)",
                             icon=WARNING):
                     pipeline_configuration.output_dir = pipeline_dir
-
-            self._pipeline_configuration = pipeline_configuration
-
-            if create_run_file:
-                self._update_run_file()
         else:
-            self._pipeline_configuration = PipelineConfiguration(Pipeline(), output_dir=directory[0],
+            pipeline_configuration = PipelineConfiguration(Pipeline(), output_dir=pipeline_dir,
                                                                  seda_version="\"seda:1.6.0-SNAPSHOT-20230920.1\"")
+
+        self._change_pipeline_configuration(pipeline_configuration)
+
+        if create_run_file:
+            self._update_run_file()
+
+    def _change_pipeline_configuration(self, pipeline_configuration: PipelineConfiguration) -> None:
+        if self._has_pipeline():
+            self._pipeline_configuration.remove_callback(self._on_pipeline_config_change)  # type: ignore
+
+            for main_frm in [self._frm_designer, self._frm_pipeline, self._frm_config]:
+                for child in main_frm.winfo_children():
+                    child.destroy()
+
+        self._pipeline_configuration = pipeline_configuration
 
         self._update_components()
         self._update_texts()
@@ -214,7 +270,8 @@ class AutoPhyloPipeliner(Tk):
             for index in range(0, len(self._tab_control.tabs())):
                 self._tab_control.tab(index, state=NORMAL)
 
-            self._panel_designer = _DesignerFrame(self._pipeline_configuration, self._commands, self._frm_designer)
+            self._panel_designer = _DesignerFrame(self._pipeline_configuration, self._selected_commands,
+                                                  self._frm_designer)
             self._text_pipeline = Text(self._frm_pipeline, state=DISABLED, spacing3=4)
             self._text_config = Text(self._frm_config, state=DISABLED, spacing3=4)
 
@@ -285,11 +342,13 @@ class AutoPhyloPipeliner(Tk):
             raise ValueError("pipeline_configuration.output_dir should not be None")
 
         working_path = Path(self._pipeline_configuration.output_dir)
+        working_path.mkdir(parents=True, exist_ok=True)
+
         run_file_path = working_path / "run.sh"
 
         with run_file_path.open("w") as run_file_file:
             run_file_file.write(
-                self._run_file_generator.generate(self._pipeline_configuration, self._auto_phylo_version))
+                self._run_file_generator.generate(self._pipeline_configuration, self._selected_commands.version))
 
         # Gives execution permissions for the file owner
         current_permissions = run_file_path.stat().st_mode
@@ -312,49 +371,54 @@ class AutoPhyloPipeliner(Tk):
 
 
 class _Toolbar(Frame):
-    def __init__(self, auto_phylo_version: str, master: Optional[Misc] = None, relief=FLAT, *args, **kwargs):
+    def __init__(self, selected_command: Commands, commands: List[Commands], master: Optional[Misc] = None, relief=FLAT,
+                 *args, **kwargs):
         super().__init__(master, relief=relief, *args, **kwargs)
 
         self._queue_new_pipeline: EventQueue[Tuple[str, bool]] = EventQueue[Tuple[str, bool]]()
         self._event_new_pipeline: EventListeners[Tuple[str, bool]] = \
             EventListeners[Tuple[str, bool]](self._queue_new_pipeline)
 
-        self._queue_auto_phylo_version_change: EventQueue[str] = EventQueue[str]()
-        self._event_auto_phylo_version_change: EventListeners[str] = \
-            EventListeners[str](self._queue_auto_phylo_version_change)
+        self._queue_auto_phylo_version_change: EventQueue[Commands] = EventQueue[Commands]()
+        self._event_auto_phylo_version_change: EventListeners[Commands] = \
+            EventListeners[Commands](self._queue_auto_phylo_version_change)
 
-        self._build_components(auto_phylo_version)
+        self._build_components(selected_command, commands)
 
-    def _build_components(self, auto_phylo_version: str):
+    def _build_components(self, selected_command: Commands, commands: List[Commands]) -> None:
+        self._commands: Dict[str, Commands] = {command.version: command for command in commands}
+
         btn_new_pipeline = Button(self, text="Load / Create pipeline", command=self._on_new_pipeline)
         btn_change_theme = Button(self, text="Change theme", command=sv_ttk.toggle_theme)
 
         lbl_auto_phylo_version = Label(self, text="Auto-phylo version")
-        self._sv_e_auto_phylo_version: StringVar = StringVar(self, value=auto_phylo_version)
-        e_auto_phylo_version = Entry(self, textvariable=self._sv_e_auto_phylo_version)
 
-        e_auto_phylo_version.bind("<FocusOut>", self._on_auto_phylo_version_change)
+        versions = [command.version for command in commands]
+        self._cmb_auto_phylo_version = Combobox(self, state="readonly", values=versions)
+        self._cmb_auto_phylo_version.set(selected_command.version)
 
         btn_new_pipeline.pack(side=LEFT, padx=2, pady=2)
         btn_change_theme.pack(side=LEFT, padx=2, pady=2)
-        e_auto_phylo_version.pack(side=RIGHT, padx=2, pady=2, fill=Y)
+        self._cmb_auto_phylo_version.pack(side=RIGHT, padx=2, pady=2, fill=Y)
         lbl_auto_phylo_version.pack(side=RIGHT, padx=2, pady=2)
+
+        self._cmb_auto_phylo_version.bind("<<ComboboxSelected>>", self._on_auto_phylo_version_change)
 
     @property
     def auto_phylo_version(self) -> str:
-        return self._sv_e_auto_phylo_version.get()
+        return self._cmb_auto_phylo_version.get()
 
     @auto_phylo_version.setter
     def auto_phylo_version(self, auto_phylo_version: str) -> None:
         if self.auto_phylo_version != auto_phylo_version:
-            self._sv_e_auto_phylo_version.set(auto_phylo_version)
+            self._cmb_auto_phylo_version.set(auto_phylo_version)
 
     @property
     def event_new_pipeline(self) -> EventListeners[Tuple[str, bool]]:
         return self._event_new_pipeline
 
     @property
-    def event_auto_phylo_version_change(self) -> EventListeners[str]:
+    def event_auto_phylo_version_change(self) -> EventListeners[Commands]:
         return self._event_auto_phylo_version_change
 
     def _on_new_pipeline(self) -> None:
@@ -375,11 +439,13 @@ class _Toolbar(Frame):
         self._queue_new_pipeline.notify((selected_directory, load))
 
     def _on_auto_phylo_version_change(self, event: Event) -> None:
-        self._queue_auto_phylo_version_change.notify(event.widget.get())
+        commands = self._commands[event.widget.get()]
+
+        self._queue_auto_phylo_version_change.notify(commands)
 
 
 class _DesignerFrame(Frame):
-    def __init__(self, pipeline_configuration: PipelineConfiguration, commands: Commands = load_commands(),
+    def __init__(self, pipeline_configuration: PipelineConfiguration, commands: Commands,
                  master: Optional[Misc] = None, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 

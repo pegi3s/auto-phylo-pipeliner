@@ -8,6 +8,7 @@ from hamcrest import equal_to
 from hamcrest.core import assert_that
 from hamcrest.core import is_
 
+from auto_phylo.pipeliner import load_default_commands
 from auto_phylo.pipeliner.io.ConfigurationParser import ConfigurationParser
 from auto_phylo.pipeliner.io.PipelineParser import PipelineParser
 from auto_phylo.pipeliner.io.RunFileParser import RunFileParser
@@ -24,7 +25,7 @@ def step_impl(context: Context, pipeline_id: str) -> None:
 
 @when(u"we parse this pipeline text")
 def step_impl(context: Context) -> None:
-    parser = PipelineParser()
+    parser = PipelineParser(load_default_commands())
     context.parsed_pipeline = parser.parse(StringIO(context.pipeline_text))
 
 

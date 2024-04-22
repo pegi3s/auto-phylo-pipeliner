@@ -2,7 +2,6 @@ import re
 from typing import TextIO, Dict
 
 from auto_phylo.pipeliner.io.ParseError import ParseError
-from auto_phylo.pipeliner.model.CommandConfiguration import CommandConfiguration
 from auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfiguration
 
 

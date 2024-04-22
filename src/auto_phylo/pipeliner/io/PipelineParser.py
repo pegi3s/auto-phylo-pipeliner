@@ -1,7 +1,6 @@
 import re
 from typing import TextIO, Dict, List
 
-from auto_phylo.pipeliner import load_commands
 from auto_phylo.pipeliner.io.ParseError import ParseError
 from auto_phylo.pipeliner.model.CommandConfiguration import CommandConfiguration
 from auto_phylo.pipeliner.model.Commands import Commands
@@ -10,7 +9,7 @@ from auto_phylo.pipeliner.model.PipelineConfiguration import PipelineConfigurati
 
 
 class PipelineParser:
-    def __init__(self, commands: Commands = load_commands()):
+    def __init__(self, commands: Commands):
         self._commands: Commands = commands
 
     def parse(self, text: TextIO) -> PipelineConfiguration:

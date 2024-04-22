@@ -1,6 +1,7 @@
 from copy import deepcopy
 from typing import List, Optional, Union, Dict
 
+from auto_phylo.pipeliner.model.Commands import Commands
 from auto_phylo.pipeliner.model.Command import Command
 from auto_phylo.pipeliner.model.CommandConfiguration import CommandConfiguration
 from auto_phylo.pipeliner.model.CommandConfigurationEvent import CommandConfigurationEvent
@@ -160,6 +161,24 @@ class PipelineConfiguration(Observable):
         self._pipeline.remove_command(index)
         self._pipeline.insert_command(index, command_config.command)
         self.set_command_configuration(index, command_config)
+
+    def migrate_to_commands(self, commands: Commands) -> "PipelineConfiguration":
+        try:
+            pipeline = Pipeline([commands.find_by_name(command.name) for command in self._pipeline])
+            command_configs = [
+                CommandConfiguration(
+                    commands.find_by_name(command_config.command.name),
+                    command_config.input_dir,
+                    command_config.output_dir,
+                    command_config.special if command_config.is_special_supported() else None,
+                    command_config.param_values
+                )
+                for command_config in self._command_configs
+            ]
+
+            return PipelineConfiguration(pipeline, self.seda_version, self.output_dir, command_configs)
+        except:
+            raise ValueError("Pipeline configuration is not compatible with the commands provided")
 
     def _on_pipeline_change(self, pipeline: Pipeline, event: PipelineChangeEvent) -> None:
         index = event.index

@@ -24,7 +24,7 @@ class PipelineDesigner(Frame):
     _PAD_X: Final[Tuple[int, int]] = (4, 4)
     _PAD_Y: Final[Tuple[int, int]] = (2, 2)
 
-    def __init__(self, pipeline_configuration: PipelineConfiguration, commands: Commands = load_commands(),
+    def __init__(self, pipeline_configuration: PipelineConfiguration, commands: Commands,
                  master: Optional[Widget] = None, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 

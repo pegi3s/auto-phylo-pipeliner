@@ -5,6 +5,7 @@ from behave.fixture import use_fixture_by_tag
 from behave.runner import Context
 from hamcrest.core import assert_that
 
+from auto_phylo.pipeliner import load_default_commands
 from auto_phylo.pipeliner.io.ConfigurationParser import ConfigurationParser
 from auto_phylo.pipeliner.io.ParseError import ParseError
 from auto_phylo.pipeliner.io.PipelineParser import PipelineParser
@@ -24,7 +25,7 @@ def step_impl(context: Context, pipeline_error_id: str) -> None:
 
 @when(u"we parse this bad pipeline configuration text")
 def step_impl(context: Context) -> None:
-    parser = PipelineParser()
+    parser = PipelineParser(load_default_commands())
 
     try:
         parser.parse(StringIO(context.pipeline_text))
