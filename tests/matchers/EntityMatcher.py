@@ -4,6 +4,7 @@ from hamcrest import has_entries
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.description import Description
 from hamcrest.core.matcher import Matcher
+from hamcrest.core.string_description import StringDescription
 
 T = TypeVar("T")
 A = TypeVar("A")
@@ -76,7 +77,7 @@ class AssertionBuilder(Generic[A]):
                     )
         else:
             for expected, actual in zip(expected_value, actual_value):
-                description = Description()
+                description = StringDescription()
                 if not matcher(expected).matches(actual, description):
                     raise AssertionError(
                         f"Field {field} should have the item {expected} but it has {actual}. "
@@ -96,7 +97,7 @@ class AssertionBuilder(Generic[A]):
         if matcher is None:
             return comparison(expected_value, actual_value), None
         else:
-            description = Description()
+            description = StringDescription()
             if matcher(expected_value).matches(actual_value, description):
                 return True, None
             else:
