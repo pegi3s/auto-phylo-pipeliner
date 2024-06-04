@@ -2,8 +2,8 @@ import json
 from importlib import resources
 from io import IOBase
 from pathlib import Path
-from typing import Union, Dict, Final, List, Optional, TextIO
-from urllib.request import urlretrieve
+from typing import Union, Dict, Final, List, Optional
+from urllib.request import urlretrieve, urlopen
 
 import auto_phylo
 from auto_phylo.pipeliner.model.Command import Command
@@ -20,21 +20,19 @@ def load_commands(custom_commands_paths: Optional[Dict[str, Union[str, Path, IOB
 
     return list(commands for _, commands in sorted(commands.items()))
 
+
 def load_default_commands() -> Commands:
     return _load_built_in_commands()["v2.0.0"]
 
-def check_for_new_versions() -> None:
-    # https://api.github.com/repos/pegi3s/auto-phylo/tags
-    # https://raw.githubusercontent.com/pegi3s/auto-phylo/v2.1.0/commands.json
 
-    # with urlopen("https://api.github.com/repos/pegi3s/auto-phylo/tags") as tags_url:
-    with open("tags.json") as tags_url:
+def check_for_new_versions() -> None:
+    with urlopen("https://api.github.com/repos/pegi3s/auto-phylo/tags") as tags_url:
         tags = json.loads(tags_url.read())
 
         for tag in tags:
             version = tag["name"]
 
-            if not version in ("v1.0.0", "v2.0.0"):
+            if version not in ("v1.0.0", "v2.0.0"):
                 version_path = CACHE_PATH / version
                 version_path.mkdir(parents=True, exist_ok=True)
 

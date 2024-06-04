@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, FileType
+from sys import stderr
 
 from auto_phylo.pipeliner import load_commands, check_for_new_versions
 from auto_phylo.pipeliner.component.AutoPhyloPipeliner import AutoPhyloPipeliner
@@ -15,7 +16,10 @@ def launch():
     args = parser.parse_args()
 
     if not args.disable_update_commands:
-        check_for_new_versions()
+        try:
+            check_for_new_versions()
+        except:
+            print("Error checking for new versions of auto-phylo", file=stderr)
 
     if args.commands_file:
         commands = load_commands({"Custom": args.commands_file})
