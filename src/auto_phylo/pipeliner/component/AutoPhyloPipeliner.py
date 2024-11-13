@@ -232,7 +232,7 @@ class AutoPhyloPipeliner(Tk):
                     pipeline_configuration.output_dir = pipeline_dir
         else:
             pipeline_configuration = PipelineConfiguration(Pipeline(), output_dir=pipeline_dir,
-                                                                 seda_version="\"seda:1.6.0-SNAPSHOT-20230920.1\"")
+                                                                 seda_version="\"seda:1.6.1\"")
 
         self._change_pipeline_configuration(pipeline_configuration)
 
